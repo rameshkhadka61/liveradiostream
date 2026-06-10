@@ -49,10 +49,10 @@ if ( false === $country_count ) {
 
             <div class="d-flex flex-wrap justify-content-center gap-2">
                 <?php
-                $trending_countries = get_transient('lr_trending_countries');
+                $trending_countries = get_transient( 'lr_trending_countries_v3' );
                 if ( false === $trending_countries ) {
-                    $trending_countries = get_terms( array( 'taxonomy' => 'country', 'number' => 6, 'orderby' => 'count', 'order' => 'DESC' ) );
-                    set_transient('lr_trending_countries', $trending_countries, 12 * HOUR_IN_SECONDS);
+                    $trending_countries = get_terms( array( 'taxonomy' => 'country', 'number' => 6, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => false ) );
+                    set_transient( 'lr_trending_countries_v3', $trending_countries, 12 * HOUR_IN_SECONDS );
                 }
                 foreach ( $trending_countries as $country ) {
                     echo '<a href="' . esc_url( get_term_link( $country ) ) . '" class="tag-btn">' . esc_html( $country->name ) . '</a>';
@@ -73,10 +73,10 @@ if ( false === $country_count ) {
             </div>
             <div class="row g-4">
                 <?php
-                $top_countries = get_transient('lr_top_countries');
+                $top_countries = get_transient( 'lr_top_countries_v3' );
                 if ( false === $top_countries ) {
-                    $top_countries = get_terms( array( 'taxonomy' => 'country', 'number' => 4, 'orderby' => 'count', 'order' => 'DESC' ) );
-                    set_transient('lr_top_countries', $top_countries, 12 * HOUR_IN_SECONDS);
+                    $top_countries = get_terms( array( 'taxonomy' => 'country', 'number' => 4, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => false ) );
+                    set_transient( 'lr_top_countries_v3', $top_countries, 12 * HOUR_IN_SECONDS );
                 }
                 foreach ( $top_countries as $country ) :
                     $iso_code = liveradio_get_country_code( $country->slug );
@@ -159,10 +159,10 @@ if ( false === $country_count ) {
             <h2 class="h3 fw-bold mb-4">Explore Genres</h2>
             <div class="row g-3">
                 <?php
-                $genres = get_transient('lr_top_genres');
+                $genres = get_transient( 'lr_genres_v3' );
                 if ( false === $genres ) {
-                    $genres = get_terms( array( 'taxonomy' => 'genre', 'number' => 4, 'orderby' => 'count', 'order' => 'DESC' ) );
-                    set_transient('lr_top_genres', $genres, 12 * HOUR_IN_SECONDS);
+                    $genres = get_terms( array( 'taxonomy' => 'genre', 'number' => 4, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => false ) );
+                    set_transient( 'lr_genres_v3', $genres, 12 * HOUR_IN_SECONDS );
                 }
                 $colors = array('#ef4444', '#3b82f6', '#10b981', '#f59e0b');
                 $icons = array('bi-mic-fill', 'bi-newspaper', 'bi-lightning-fill', 'bi-music-note-beamed');

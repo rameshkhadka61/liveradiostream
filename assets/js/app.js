@@ -414,15 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Auto-play Logic for Single Station Page
-    const heroPlayBtn = document.querySelector('.station-hero .btn-play-trigger');
-    if (heroPlayBtn) {
-      const streamUrl = heroPlayBtn.getAttribute('data-stream-url');
-      if (audioPlayer.src !== streamUrl || !isPlaying) {
-        // Short delay to ensure DOM is ready and UI can update
-        setTimeout(() => heroPlayBtn.click(), 300);
-      }
-    }
+    // Auto-play removed: we wait for user interaction to avoid browser 'Autoplay Blocked' errors.
   }
 
   // Run initApp on first load

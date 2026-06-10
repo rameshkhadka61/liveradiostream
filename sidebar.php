@@ -10,7 +10,11 @@
         <h2 class="h5 fw-bold mb-3"><i class="bi bi-bar-chart-fill me-2" style="color:var(--accent-cyan);"></i>Popular Genres</h2>
         <div class="d-flex flex-wrap gap-2">
             <?php
-            $genres = get_terms( array( 'taxonomy' => 'genre', 'number' => 7, 'orderby' => 'count', 'order' => 'DESC' ) );
+            $genres = get_transient( 'lr_sidebar_genres_v3' );
+            if ( false === $genres ) {
+                $genres = get_terms( array( 'taxonomy' => 'genre', 'number' => 7, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => false ) );
+                set_transient( 'lr_sidebar_genres_v3', $genres, 12 * HOUR_IN_SECONDS );
+            }
             $colors = array( '#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#ec4899' );
             $i = 0;
             foreach ( $genres as $genre ) :
@@ -41,7 +45,11 @@
         <h2 class="h5 fw-bold mb-3"><i class="bi bi-globe2 me-2" style="color:var(--accent-cyan);"></i>Top Countries</h2>
         <div class="d-flex flex-column gap-2">
             <?php
-            $countries = get_terms( array( 'taxonomy' => 'country', 'number' => 5, 'orderby' => 'count', 'order' => 'DESC' ) );
+            $countries = get_transient( 'lr_sidebar_countries_v3' );
+            if ( false === $countries ) {
+                $countries = get_terms( array( 'taxonomy' => 'country', 'number' => 5, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => false ) );
+                set_transient( 'lr_sidebar_countries_v3', $countries, 12 * HOUR_IN_SECONDS );
+            }
             $c_count = count($countries);
             $j = 0;
             foreach ( $countries as $country ) :
