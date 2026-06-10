@@ -130,7 +130,7 @@ get_header();
                         </div>
                         
                         <div class="d-flex flex-wrap gap-2">
-                            <button class="btn btn-gradient rounded-pill px-4 btn-play-trigger" data-stream-url="<?php echo esc_url( $stream_url ); ?>" data-img="<?php echo has_post_thumbnail() ? get_the_post_thumbnail_url(get_the_ID(), 'medium') : get_template_directory_uri() . '/assets/images/placeholder.png'; ?>">
+                            <button class="btn btn-gradient rounded-pill px-4 btn-play-trigger" data-station-id="<?php echo get_the_ID(); ?>" data-img="<?php echo has_post_thumbnail() ? get_the_post_thumbnail_url(get_the_ID(), 'medium') : get_template_directory_uri() . '/assets/images/placeholder.png'; ?>">
                                 <i class="bi bi-play-circle-fill me-2"></i>Play Station
                             </button>
                             <?php if ( $website_url ) : ?>

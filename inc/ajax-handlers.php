@@ -172,3 +172,27 @@ function liveradio_submit_station() {
 }
 add_action( 'wp_ajax_liveradio_submit_station', 'liveradio_submit_station' );
 add_action( 'wp_ajax_nopriv_liveradio_submit_station', 'liveradio_submit_station' );
+
+add_action( 'wp_ajax_nopriv_liveradio_get_stream_url', 'liveradio_ajax_get_stream_url' );
+add_action( 'wp_ajax_liveradio_get_stream_url', 'liveradio_ajax_get_stream_url' );
+
+function liveradio_ajax_get_stream_url() {
+    check_ajax_referer( 'liveradio_nonce', 'nonce' );
+
+    $station_id = isset( $_POST['station_id'] ) ? intval( $_POST['station_id'] ) : 0;
+
+    if ( ! $station_id ) {
+        wp_send_json_error( 'Invalid station ID' );
+    }
+
+    $stream_url = get_post_meta( $station_id, 'streaming_url', true );
+    if ( ! $stream_url ) {
+        $stream_url = get_post_meta( $station_id, '_stream_url', true );
+    }
+
+    if ( $stream_url ) {
+        wp_send_json_success( array( 'stream_url' => esc_url_raw( $stream_url ) ) );
+    } else {
+        wp_send_json_error( 'No stream URL found' );
+    }
+}

@@ -122,8 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btn) {
       e.preventDefault();
 
-      const streamUrl = btn.getAttribute('data-stream-url');
-      if (!streamUrl) return;
+      const stationId = btn.getAttribute('data-station-id');
+      if (!stationId) return;
 
       const card = btn.closest('.station-card') || btn.closest('.station-hero');
       if (card) {
@@ -137,18 +137,46 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (stickyPlayer) stickyPlayer.classList.add('show');
+      const details = document.getElementById('player-station-details');
+      if (details) details.innerText = 'Connecting...';
 
-      // Set audio source and play
-      if (audioPlayer.src !== streamUrl) {
-        audioPlayer.src = streamUrl;
-      }
+      const formData = new FormData();
+      formData.append('action', 'liveradio_get_stream_url');
+      formData.append('station_id', stationId);
+      formData.append('nonce', liveradio_ajax.nonce);
 
-      audioPlayer.play().then(() => {
-        togglePlayState(true);
-      }).catch(err => {
-        console.error("Error playing audio:", err);
-        const details = document.getElementById('player-station-details');
-        if (details) details.innerText = 'Stream Error';
+      fetch(liveradio_ajax.ajax_url, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success && data.data.stream_url) {
+          const streamUrl = data.data.stream_url;
+          if (audioPlayer.src !== streamUrl) {
+            audioPlayer.src = streamUrl;
+            audioPlayer.dataset.stationId = stationId;
+          }
+
+          audioPlayer.play().then(() => {
+            togglePlayState(true);
+          }).catch(err => {
+            console.error("Error playing audio:", err);
+            if (err.name === 'NotAllowedError') {
+              togglePlayState(false);
+            } else {
+              if (details) details.innerText = 'Stream Error';
+              togglePlayState(false, true);
+            }
+          });
+        } else {
+          if (details) details.innerText = 'Stream Unavailable';
+          togglePlayState(false, true);
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching stream:", err);
+        if (details) details.innerText = 'Connection Error';
         togglePlayState(false, true);
       });
     }
@@ -414,7 +442,15 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Auto-play removed: we wait for user interaction to avoid browser 'Autoplay Blocked' errors.
+    // Auto-play Logic for Single Station Page
+    const heroPlayBtn = document.querySelector('.station-hero .btn-play-trigger');
+    if (heroPlayBtn) {
+      const stationId = heroPlayBtn.getAttribute('data-station-id');
+      if (audioPlayer.dataset.stationId !== stationId || !isPlaying) {
+        // Short delay to ensure DOM is ready and UI can update
+        setTimeout(() => heroPlayBtn.click(), 300);
+      }
+    }
   }
 
   // Run initApp on first load

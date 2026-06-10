@@ -34,7 +34,7 @@ $is_trending = rand(1, 10) > 8;
             <?php endif; ?>
             <div class="live-badge"><div class="live-dot"></div> Live</div>
             <div class="play-overlay">
-                <button class="btn-play-circle btn-play-trigger" data-stream-url="<?php echo esc_url( $stream_url ); ?>" aria-label="Play <?php the_title_attribute(); ?>">
+                <button class="btn-play-circle btn-play-trigger" data-station-id="<?php echo get_the_ID(); ?>" aria-label="Play <?php the_title_attribute(); ?>">
                     <i class="bi bi-play-fill"></i>
                 </button>
             </div>

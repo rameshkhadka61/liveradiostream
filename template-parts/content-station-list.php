@@ -39,7 +39,7 @@ if ( $country_terms && ! is_wp_error( $country_terms ) ) {
         <i class="bi bi-headphones"></i> 128 kbps
     </div>
     
-    <button class="station-list-play btn-play-trigger" data-stream-url="<?php echo esc_url( $stream_url ); ?>" aria-label="Play <?php the_title_attribute(); ?>">
+    <button class="station-list-play btn-play-trigger" data-station-id="<?php echo get_the_ID(); ?>" aria-label="Play <?php the_title_attribute(); ?>">
         <i class="bi bi-play-circle-fill"></i>
     </button>
 </a>
