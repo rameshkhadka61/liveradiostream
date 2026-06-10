@@ -312,6 +312,24 @@ $myUpdateChecker = PucFactory::buildUpdateChecker(
 // Optional: If you're using a private repository, specify the access token like this:
 // $myUpdateChecker->setAuthentication('your-token-here');
 
-// Optional: Set the branch that contains the stable release.
 $myUpdateChecker->setBranch('main');
+
+/**
+ * Clear caching transients when a station is saved or deleted
+ */
+function liveradio_clear_transients_on_save( $post_id ) {
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+    if ( get_post_type( $post_id ) !== 'radio_station' ) return;
+
+    delete_transient( 'lr_station_count_v4' );
+    delete_transient( 'lr_country_count_v4' );
+    delete_transient( 'lr_all_countries_v4' );
+    delete_transient( 'lr_trending_countries_v4' );
+    delete_transient( 'lr_top_countries_v4' );
+    delete_transient( 'lr_genres_v4' );
+    delete_transient( 'lr_all_countries_v4_name_ASC' );
+    delete_transient( 'lr_all_countries_v4_count_DESC' );
+}
+add_action( 'save_post_radio_station', 'liveradio_clear_transients_on_save' );
+add_action( 'deleted_post', 'liveradio_clear_transients_on_save' );
 
