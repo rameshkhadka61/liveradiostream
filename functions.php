@@ -114,7 +114,6 @@ add_filter( 'nav_menu_link_attributes', 'liveradio_nav_menu_link_attributes', 10
 require get_template_directory() . '/inc/cpt-radio-station.php';
 require get_template_directory() . '/inc/meta-boxes.php';
 require get_template_directory() . '/inc/ajax-handlers.php';
-require get_template_directory() . '/inc/country-importer.php';
 
 /**
  * Save comment rating
