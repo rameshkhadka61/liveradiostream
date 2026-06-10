@@ -80,10 +80,10 @@ $term = get_queried_object();
                                 ?>
                                 <option selected value="" data-name="<?php echo esc_attr( $term->name ); ?>" data-slug="<?php echo esc_attr( isset($term->slug) ? $term->slug : '' ); ?>" data-code="<?php echo esc_attr($default_code); ?>" data-count="<?php echo esc_attr($term->count); ?>">🌎 Country</option>
                                 <?php
-                                $countries = get_transient('lr_all_countries');
+                                $countries = get_transient('lr_all_countries_v2');
                                 if ( false === $countries ) {
-                                    $countries = get_terms( array( 'taxonomy' => 'country', 'hide_empty' => true ) );
-                                    set_transient('lr_all_countries', $countries, 12 * HOUR_IN_SECONDS);
+                                    $countries = get_terms( array( 'taxonomy' => 'country', 'hide_empty' => false ) );
+                                    set_transient('lr_all_countries_v2', $countries, 12 * HOUR_IN_SECONDS);
                                 }
                                 foreach ( $countries as $country ) {
                                     $code = liveradio_get_country_code( $country->slug );

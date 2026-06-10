@@ -5,12 +5,19 @@
 
 get_header(); ?>
 
+    <?php 
+    $country_count = get_transient('lr_country_count_v2');
+    if ( false === $country_count ) {
+        $country_count = wp_count_terms( array( 'taxonomy' => 'country', 'hide_empty' => false ) );
+        set_transient('lr_country_count_v2', $country_count, 12 * HOUR_IN_SECONDS);
+    }
+    ?>
     <!-- Hero Section -->
     <section class="hero-section text-center text-white" style="padding: 80px 0; background: linear-gradient(135deg, rgba(6,182,212,0.8), rgba(59,130,246,0.8)), url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1200&auto=format&fit=crop') center/cover;">
         <div class="hero-overlay"></div>
         <div class="container hero-content">
             <h1 class="display-4 fw-bold mb-3">Browse by <span class="text-gradient">Country</span></h1>
-            <p class="lead mb-4 text-light opacity-75">Explore radio stations from over 150 countries worldwide.</p>
+            <p class="lead mb-4 text-light opacity-75">Explore radio stations from over <?php echo $country_count; ?>+ countries worldwide.</p>
             
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6">
@@ -42,13 +49,13 @@ get_header(); ?>
                 $orderby = isset( $_GET['orderby'] ) && $_GET['orderby'] === 'name' ? 'name' : 'count';
                 $order = isset( $_GET['orderby'] ) && $_GET['orderby'] === 'name' ? 'ASC' : 'DESC';
                 
-                $transient_key = 'lr_all_countries_' . $orderby . '_' . $order;
+                $transient_key = 'lr_all_countries_v2_' . $orderby . '_' . $order;
                 $countries = get_transient($transient_key);
                 
                 if ( false === $countries ) {
                     $countries = get_terms( array(
                         'taxonomy'   => 'country',
-                        'hide_empty' => true,
+                        'hide_empty' => false,
                         'orderby'    => $orderby,
                         'order'      => $order,
                     ) );

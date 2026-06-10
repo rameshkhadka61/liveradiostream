@@ -11,10 +11,10 @@ if ( false === $station_count ) {
     set_transient('lr_station_count', $station_count, 12 * HOUR_IN_SECONDS);
 }
 
-$country_count = get_transient('lr_country_count');
+$country_count = get_transient('lr_country_count_v2');
 if ( false === $country_count ) {
-    $country_count = wp_count_terms( array( 'taxonomy' => 'country', 'hide_empty' => true ) );
-    set_transient('lr_country_count', $country_count, 12 * HOUR_IN_SECONDS);
+    $country_count = wp_count_terms( array( 'taxonomy' => 'country', 'hide_empty' => false ) );
+    set_transient('lr_country_count_v2', $country_count, 12 * HOUR_IN_SECONDS);
 }
 ?>
 
@@ -23,7 +23,7 @@ if ( false === $country_count ) {
         <div class="hero-overlay"></div>
         <div class="container hero-content">
             <h1 class="display-4 fw-bold mb-3">Listen to Radio Stations <span class="text-gradient">Worldwide</span></h1>
-            <p class="lead mb-5 text-light opacity-75">Discover music, news, and talk shows from over <?php echo $country_count; ?> countries.</p>
+            <p class="lead mb-5 text-light opacity-75">Discover music, news, and talk shows from over <?php echo $country_count; ?>+ countries.</p>
 
             <div class="row justify-content-center mb-4">
                 <div class="col-md-8 col-lg-6">
@@ -31,10 +31,10 @@ if ( false === $country_count ) {
                         <select name="country" id="hero-country-select" class="search-select border-0 w-auto" aria-label="Select Country" onchange="if(this.options[this.selectedIndex].dataset.link) { if(typeof swup !== 'undefined') swup.navigate(this.options[this.selectedIndex].dataset.link); else window.location.href = this.options[this.selectedIndex].dataset.link; }">
                             <option value="">🌎 All</option>
                             <?php
-                            $countries = get_transient('lr_all_countries');
+                            $countries = get_transient('lr_all_countries_v2');
                             if ( false === $countries ) {
-                                $countries = get_terms( array( 'taxonomy' => 'country', 'hide_empty' => true ) );
-                                set_transient('lr_all_countries', $countries, 12 * HOUR_IN_SECONDS);
+                                $countries = get_terms( array( 'taxonomy' => 'country', 'hide_empty' => false ) );
+                                set_transient('lr_all_countries_v2', $countries, 12 * HOUR_IN_SECONDS);
                             }
                             foreach ( $countries as $country ) {
                                 echo '<option value="' . esc_attr( $country->slug ) . '" data-link="' . esc_url( get_term_link( $country ) ) . '">' . esc_html( $country->name ) . '</option>';
@@ -289,7 +289,7 @@ if ( false === $country_count ) {
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="custom-card p-3 text-center">
-                        <div class="fw-bold fs-4 text-gradient"><?php echo $country_count; ?></div>
+                        <div class="fw-bold fs-4 text-gradient"><?php echo $country_count; ?>+</div>
                         <div class="text-muted small">Countries</div>
                     </div>
                 </div>
