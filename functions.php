@@ -62,7 +62,7 @@ function liveradio_scripts() {
     wp_enqueue_script( 'choices-js', 'https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js', array(), '10.2.0', true );
 
     // Theme JS
-    wp_enqueue_script( 'liveradio-app', get_template_directory_uri() . '/assets/js/app.js', array('swup-js', 'choices-js'), wp_get_theme()->get( 'Version' ), true );
+    wp_enqueue_script( 'liveradio-app', get_template_directory_uri() . '/assets/js/app.v2.js', array('swup-js', 'choices-js'), wp_get_theme()->get( 'Version' ), true );
 
     // Pass ajax_url to script
     wp_localize_script( 'liveradio-app', 'liveradio_ajax', array(

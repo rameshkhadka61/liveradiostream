@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }).catch(err => {
         console.error("Error playing audio:", err);
         const details = document.getElementById('player-station-details');
-        if (details) details.innerText = 'Autoplay Blocked';
+        if (details) details.innerText = 'Stream Error';
         togglePlayState(false, true);
       });
     }
