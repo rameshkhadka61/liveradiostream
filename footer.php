@@ -62,19 +62,14 @@
 <?php
 $player_title = 'Select a Station';
 $player_thumb = get_template_directory_uri() . '/assets/images/placeholder.png';
-$player_stream = '';
 $is_single_station = is_singular( 'radio_station' );
 if ( $is_single_station ) {
     $player_title = get_the_title();
     $player_thumb = has_post_thumbnail() ? get_the_post_thumbnail_url( get_the_ID(), 'thumbnail' ) : $player_thumb;
-    $player_stream = get_post_meta( get_the_ID(), 'streaming_url', true );
-    if ( ! $player_stream ) {
-        $player_stream = get_post_meta( get_the_ID(), '_stream_url', true );
-    }
 }
 ?>
     <!-- Sticky Audio Player -->
-    <div id="sticky-player" class="sticky-player <?php echo $is_single_station ? 'show' : ''; ?>" data-init-stream="<?php echo esc_url($player_stream); ?>">
+    <div id="sticky-player" class="sticky-player <?php echo $is_single_station ? 'show' : ''; ?>">
         <div class="container d-flex align-items-center justify-content-between flex-wrap gap-3">
             <div class="d-flex align-items-center gap-3">
                 <img id="player-thumbnail" src="<?php echo esc_url( $player_thumb ); ?>"

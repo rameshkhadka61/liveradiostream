@@ -86,13 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let isPlaying = false;
 
-  // Initialize player with single page stream if available (Initial Load)
-  if (stickyPlayer) {
-    const initStream = stickyPlayer.getAttribute('data-init-stream');
-    if (initStream && audioPlayer) {
-      audioPlayer.src = initStream;
-    }
-  }
+  // The player stream is fetched dynamically via AJAX on click or auto-play
 
   if (audioPlayer) {
     audioPlayer.addEventListener('waiting', () => {
