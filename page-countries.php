@@ -6,10 +6,10 @@
 get_header(); ?>
 
     <?php 
-    $country_count = get_transient('lr_country_count_v2');
+    $country_count = get_transient('lr_country_count_v4');
     if ( false === $country_count ) {
         $country_count = wp_count_terms( array( 'taxonomy' => 'country', 'hide_empty' => false ) );
-        set_transient('lr_country_count_v2', $country_count, 12 * HOUR_IN_SECONDS);
+        set_transient('lr_country_count_v4', $country_count, 12 * HOUR_IN_SECONDS);
     }
     ?>
     <!-- Hero Section -->
@@ -49,7 +49,7 @@ get_header(); ?>
                 $orderby = isset( $_GET['orderby'] ) && $_GET['orderby'] === 'name' ? 'name' : 'count';
                 $order = isset( $_GET['orderby'] ) && $_GET['orderby'] === 'name' ? 'ASC' : 'DESC';
                 
-                $transient_key = 'lr_all_countries_v2_' . $orderby . '_' . $order;
+                $transient_key = 'lr_all_countries_v4_' . $orderby . '_' . $order;
                 $countries = get_transient($transient_key);
                 
                 if ( false === $countries ) {
