@@ -369,6 +369,11 @@ function liveradio_handle_custom_login_url() {
         $schema = is_ssl() ? 'https://' : 'http://';
         $_SERVER['SCRIPT_NAME'] = '/wp-login.php';
         
+        // Initialize variables expected by wp-login.php to prevent undefined variable warnings
+        global $user_login, $error;
+        $user_login = '';
+        $error = '';
+        
         require_once ABSPATH . 'wp-login.php';
         exit;
     }
