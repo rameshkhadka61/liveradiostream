@@ -230,3 +230,22 @@ function liveradio_contact_submit() {
 }
 add_action( 'wp_ajax_liveradio_contact_submit', 'liveradio_contact_submit' );
 add_action( 'wp_ajax_nopriv_liveradio_contact_submit', 'liveradio_contact_submit' );
+
+/**
+ * Handle Report Station
+ */
+add_action( 'wp_ajax_liveradio_report_station', 'liveradio_ajax_report_station' );
+add_action( 'wp_ajax_nopriv_liveradio_report_station', 'liveradio_ajax_report_station' );
+function liveradio_ajax_report_station() {
+    check_ajax_referer( 'liveradio_ajax_nonce', 'nonce' );
+
+    $station_id = isset( $_POST['station_id'] ) ? intval( $_POST['station_id'] ) : 0;
+    
+    if ( $station_id > 0 ) {
+        // Here you could send an email to the admin or save a meta field
+        // Example: update_post_meta( $station_id, '_reported_broken', current_time('mysql') );
+        wp_send_json_success( array( 'message' => 'Report received' ) );
+    } else {
+        wp_send_json_error( array( 'message' => 'Invalid station' ) );
+    }
+}

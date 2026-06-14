@@ -57,13 +57,21 @@ $total_ratings = $rating_data['count'];
         'email'  => '<div class="col-md-6 mb-3"><input type="email" class="form-control" name="email" id="email" value="' . esc_attr(  $commenter['comment_author_email'] ) . '" placeholder="Your Email *" aria-label="Your email" required="required"></div>',
     );
 
-    $rating_html = '<div class="col-md-12 mb-3"><select class="form-select" name="rating" id="rating" aria-label="Rating" required>
-            <option value="5" selected>⭐⭐⭐⭐⭐ Excellent</option>
-            <option value="4">⭐⭐⭐⭐ Good</option>
-            <option value="3">⭐⭐⭐ Average</option>
-            <option value="2">⭐⭐ Below Average</option>
-            <option value="1">⭐ Poor</option>
-        </select></div>';
+    $rating_html = '<div class="col-md-12 mb-3">
+        <label class="form-label text-muted small fw-bold text-uppercase">Your Rating *</label>
+        <div class="interactive-rating">
+            <input type="radio" name="rating" id="rating-5" value="5" required>
+            <label for="rating-5" title="5 stars"><i class="bi bi-star-fill"></i></label>
+            <input type="radio" name="rating" id="rating-4" value="4">
+            <label for="rating-4" title="4 stars"><i class="bi bi-star-fill"></i></label>
+            <input type="radio" name="rating" id="rating-3" value="3">
+            <label for="rating-3" title="3 stars"><i class="bi bi-star-fill"></i></label>
+            <input type="radio" name="rating" id="rating-2" value="2">
+            <label for="rating-2" title="2 stars"><i class="bi bi-star-fill"></i></label>
+            <input type="radio" name="rating" id="rating-1" value="1">
+            <label for="rating-1" title="1 star"><i class="bi bi-star-fill"></i></label>
+        </div>
+    </div>';
 
     comment_form( array(
         'class_form'           => 'row g-3',

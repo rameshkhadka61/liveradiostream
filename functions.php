@@ -603,3 +603,16 @@ function liveradio_modify_taxonomy_query( $query ) {
     }
 }
 add_action( 'pre_get_posts', 'liveradio_modify_taxonomy_query' );
+
+/**
+ * Save Comment Rating
+ */
+add_action( 'comment_post', 'liveradio_save_comment_rating', 10, 3 );
+function liveradio_save_comment_rating( $comment_id, $comment_approved, $commentdata ) {
+    if ( isset( $_POST['rating'] ) ) {
+        $rating = intval( $_POST['rating'] );
+        if ( $rating >= 1 && $rating <= 5 ) {
+            add_comment_meta( $comment_id, 'rating', $rating );
+        }
+    }
+}

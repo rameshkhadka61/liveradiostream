@@ -145,6 +145,9 @@ get_header();
                             <button class="btn-icon" id="btn-favorite" data-station-id="<?php echo get_the_ID(); ?>" title="Add to Favorites" aria-label="Add to Favorites">
                                 <i class="bi bi-heart"></i>
                             </button>
+                            <button class="btn-icon text-danger" id="btn-report" data-station-id="<?php echo get_the_ID(); ?>" title="Report Broken Stream" aria-label="Report Broken Stream">
+                                <i class="bi bi-exclamation-triangle"></i>
+                            </button>
                             <button class="btn-icon" id="btn-share" data-title="<?php echo esc_attr( get_the_title() ); ?>" data-url="<?php echo esc_url( get_the_permalink() ); ?>" title="Share" aria-label="Share station">
                                 <i class="bi bi-share"></i>
                             </button>
@@ -156,6 +159,20 @@ get_header();
                 </div>
             </div>
         </div>
+
+        <!-- Top Leaderboard Ad -->
+        <?php $top_ad = get_theme_mod( 'liveradio_ad_top', '' ); ?>
+        <?php if ( ! empty( $top_ad ) ) : ?>
+            <div class="container mb-4 text-center">
+                <?php echo $top_ad; ?>
+            </div>
+        <?php elseif ( current_user_can( 'manage_options' ) ) : ?>
+            <div class="container mb-4">
+                <div class="glass p-3 rounded-4 text-center" style="border:1px dashed rgba(255,255,255,.15);">
+                    <p class="text-muted small mb-0">Top Leaderboard Ad Placeholder (Add code in Customizer)</p>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <!-- ===== TWO-COLUMN LAYOUT ===== -->
         <div class="row g-4 mt-1">
@@ -179,6 +196,18 @@ get_header();
                         <?php the_content(); ?>
                     </div>
                 </div>
+
+                <!-- In-Article Ad -->
+                <?php $inarticle_ad = get_theme_mod( 'liveradio_ad_inarticle', '' ); ?>
+                <?php if ( ! empty( $inarticle_ad ) ) : ?>
+                    <div class="mb-4 text-center">
+                        <?php echo $inarticle_ad; ?>
+                    </div>
+                <?php elseif ( current_user_can( 'manage_options' ) ) : ?>
+                    <div class="glass p-3 rounded-4 text-center mb-4" style="border:1px dashed rgba(255,255,255,.15);">
+                        <p class="text-muted small mb-0">In-Article Ad Placeholder (Add code in Customizer)</p>
+                    </div>
+                <?php endif; ?>
 
                 <!-- Station Details -->
                 <div class="custom-card p-4 mb-4">
