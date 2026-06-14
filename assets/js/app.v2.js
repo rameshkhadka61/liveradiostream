@@ -448,6 +448,36 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // Sync persistent player state with front page "Now Playing" widget
+    const fpName = document.getElementById('front-playing-name');
+    const fpImg = document.getElementById('front-playing-img');
+    const fpEq = document.getElementById('front-playing-eq');
+    const fpStatus = document.getElementById('front-playing-status');
+    
+    if (fpName || fpImg || fpStatus) {
+      if (audioPlayer && audioPlayer.src && audioPlayer.dataset.stationId) {
+        // We have an active station in the persistent player
+        const persistentName = document.getElementById('player-station-name')?.innerText;
+        const persistentImgSrc = document.getElementById('player-thumbnail')?.src;
+        const persistentDetails = document.getElementById('player-station-details')?.innerText;
+        
+        if (fpName && persistentName && persistentName !== 'Unknown Station') {
+          fpName.innerText = persistentName;
+        }
+        if (fpImg && persistentImgSrc) {
+          fpImg.src = persistentImgSrc;
+        }
+        
+        if (isPlaying) {
+          if (fpStatus) fpStatus.innerText = 'Now playing \u00b7 Live';
+          if (fpEq) fpEq.classList.remove('paused');
+        } else {
+          if (fpStatus) fpStatus.innerText = persistentDetails || 'Paused';
+          if (fpEq) fpEq.classList.add('paused');
+        }
+      }
+    }
+
     // Auto-play Logic for Single Station Page
     const heroPlayBtn = document.querySelector('.station-hero .btn-play-trigger');
     if (heroPlayBtn) {
