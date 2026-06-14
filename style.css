@@ -2,7 +2,7 @@
 Theme Name: LiveRadioStream
 Description: Custom theme for LiveRadioStream Website
 Author: Ramesh Khadka
-Version: 1.9.15
+Version: 1.9.16
 */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
@@ -1651,4 +1651,19 @@ html.is-leaving .transition-fade {
 .interactive-rating label:hover,
 .interactive-rating label:hover ~ label {
     color: #f59e0b;
+}
+
+/* Front Page Spotlight */
+.spotlight-card {
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+    transition: var(--transition);
+}
+.spotlight-card:hover {
+    border-color: rgba(6, 182, 212, 0.3);
+    box-shadow: var(--shadow-glow);
+}
+.spotlight-img-wrapper {
+    position: relative;
+    min-height: 250px;
 }

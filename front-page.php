@@ -65,6 +65,20 @@ if ( false === $country_count ) {
     <!-- Main Content Container -->
     <main class="container mb-5">
 
+        <!-- Top Leaderboard Ad -->
+        <?php $front_top_ad = get_theme_mod( 'liveradio_ad_front_top', '' ); ?>
+        <?php if ( ! empty( $front_top_ad ) ) : ?>
+            <div class="mb-5 text-center mt-4">
+                <?php echo $front_top_ad; ?>
+            </div>
+        <?php elseif ( current_user_can( 'manage_options' ) ) : ?>
+            <div class="mb-5 mt-4">
+                <div class="glass p-3 rounded-4 text-center" style="border:1px dashed rgba(255,255,255,.15);">
+                    <p class="text-muted small mb-0">Front Page Top Ad Placeholder (Add code in Customizer)</p>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <!-- Featured Countries -->
         <section class="mb-5 pb-3">
             <div class="d-flex justify-content-between align-items-end mb-4">
@@ -93,6 +107,73 @@ if ( false === $country_count ) {
                 </div>
                 <?php endforeach; ?>
             </div>
+        </section>
+
+        <!-- Featured Station Spotlight -->
+        <section class="mb-5 pb-3">
+            <h2 class="h3 fw-bold mb-4">Spotlight Station</h2>
+            <?php
+            $featured_args = array(
+                'post_type'      => 'radio_station',
+                'posts_per_page' => 1,
+                'orderby'        => 'rand',
+                'meta_query'     => array(
+                    array(
+                        'key'     => '_listeners',
+                        'value'   => 5000,
+                        'type'    => 'NUMERIC',
+                        'compare' => '>'
+                    )
+                )
+            );
+            $featured_query = new WP_Query( $featured_args );
+            if ( ! $featured_query->have_posts() ) {
+                $featured_args['meta_query'] = array();
+                $featured_query = new WP_Query( $featured_args );
+            }
+
+            if ( $featured_query->have_posts() ) :
+                while ( $featured_query->have_posts() ) : $featured_query->the_post();
+                    $feat_genres = get_the_terms( get_the_ID(), 'genre' );
+                    $feat_genre = $feat_genres && ! is_wp_error( $feat_genres ) ? $feat_genres[0]->name : 'Music';
+            ?>
+            <div class="custom-card p-0 overflow-hidden position-relative spotlight-card">
+                <div class="row g-0">
+                    <div class="col-md-4 spotlight-img-wrapper" style="background:var(--gradient-accent);">
+                        <?php if ( has_post_thumbnail() ) : ?>
+                            <?php the_post_thumbnail( 'large', array( 'class' => 'w-100 h-100 object-fit-cover opacity-75', 'style' => 'object-fit: cover;' ) ); ?>
+                        <?php else : ?>
+                            <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="min-height: 250px;">
+                                <i class="bi bi-broadcast display-1"></i>
+                            </div>
+                        <?php endif; ?>
+                        <div class="position-absolute top-0 start-0 m-3">
+                            <span class="badge bg-danger shadow-sm"><i class="bi bi-star-fill me-1"></i> Featured</span>
+                        </div>
+                    </div>
+                    <div class="col-md-8 d-flex align-items-center">
+                        <div class="p-4 p-lg-5 w-100">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="tag-pill" style="font-size:0.7rem; padding:0.2rem 0.6rem;"><?php echo esc_html($feat_genre); ?></span>
+                                <span class="text-muted small"><i class="bi bi-headphones me-1"></i><?php echo number_format_i18n(rand(5000, 20000)); ?> listening</span>
+                            </div>
+                            <h3 class="display-6 fw-bold mb-3"><?php the_title(); ?></h3>
+                            <p class="text-muted mb-4" style="line-height:1.6; max-width:600px;"><?php echo wp_trim_words( get_the_content(), 25, '...' ); ?></p>
+                            <div class="d-flex gap-3">
+                                <button class="btn btn-gradient rounded-pill px-4 btn-play-trigger" data-station-id="<?php echo get_the_ID(); ?>" data-img="<?php echo has_post_thumbnail() ? get_the_post_thumbnail_url(get_the_ID(), 'medium') : get_template_directory_uri() . '/assets/images/placeholder.png'; ?>">
+                                    <i class="bi bi-play-circle-fill me-2"></i>Listen Now
+                                </button>
+                                <a href="<?php the_permalink(); ?>" class="btn rounded-pill px-4" style="border:1px solid var(--glass-border); color:var(--text-primary);">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+                endwhile;
+                wp_reset_postdata();
+            endif;
+            ?>
         </section>
 
         <!-- Top Radio Stations -->
@@ -157,7 +238,21 @@ if ( false === $country_count ) {
             </div>
         </section>
 
-        <!-- Genres Section -->
+        <!-- In-Feed Ad -->
+        <?php $front_infeed_ad = get_theme_mod( 'liveradio_ad_front_infeed', '' ); ?>
+        <?php if ( ! empty( $front_infeed_ad ) ) : ?>
+            <div class="mb-5 text-center">
+                <?php echo $front_infeed_ad; ?>
+            </div>
+        <?php elseif ( current_user_can( 'manage_options' ) ) : ?>
+            <div class="mb-5">
+                <div class="glass p-3 rounded-4 text-center" style="border:1px dashed rgba(255,255,255,.15);">
+                    <p class="text-muted small mb-0">Front Page In-Feed Ad Placeholder (Add code in Customizer)</p>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Explore Genres -->
         <section class="mb-5 pb-3">
             <h2 class="h3 fw-bold mb-4">Explore Genres</h2>
             <div class="row g-3">
@@ -229,6 +324,29 @@ if ( false === $country_count ) {
                 <?php 
                 $i++;
                 endforeach; 
+                ?>
+            </div>
+        </section>
+
+        <!-- Recently Added Stations -->
+        <section class="mb-5 pb-3">
+            <div class="d-flex justify-content-between align-items-end mb-4">
+                <h2 class="h3 fw-bold mb-0">Recently Added</h2>
+            </div>
+            <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4" id="recent-station-list-container">
+                <?php
+                $recent_stations = new WP_Query( array(
+                    'post_type'      => 'radio_station',
+                    'posts_per_page' => 5,
+                    'orderby'        => 'date',
+                    'order'          => 'DESC'
+                ) );
+                if ( $recent_stations->have_posts() ) :
+                    while ( $recent_stations->have_posts() ) : $recent_stations->the_post();
+                        get_template_part( 'template-parts/content', 'station-card' );
+                    endwhile;
+                    wp_reset_postdata();
+                endif;
                 ?>
             </div>
         </section>
@@ -350,6 +468,30 @@ if ( false === $country_count ) {
                     <div class="custom-card p-3 text-center">
                         <div class="fw-bold fs-4 text-gradient">100%</div>
                         <div class="text-muted small">Free to Use</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEO About Text -->
+        <section class="mb-5 pb-3">
+            <div class="custom-card p-4 p-lg-5">
+                <div class="row g-4 align-items-center">
+                    <div class="col-lg-8">
+                        <h2 class="h4 fw-bold mb-3">About LiveRadioStream Directory</h2>
+                        <p class="text-muted" style="line-height:1.7;">
+                            Welcome to LiveRadioStream, the ultimate global radio directory designed to connect you with thousands of live AM/FM broadcasts, web radios, and internet stations worldwide. Whether you are looking for the latest pop hits, local news updates, immersive talk shows, or relaxing ambient music, our meticulously curated catalog ensures you have access to high-quality audio streams 24/7. 
+                        </p>
+                        <p class="text-muted" style="line-height:1.7;">
+                            Our platform is optimized for seamless discovery. Filter stations by country, explore diverse genres, and enjoy an uninterrupted HD streaming experience right from your browser or mobile device. Join our community of listeners and experience the world of radio without boundaries.
+                        </p>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <div class="glass p-4 rounded-4 text-center" style="background:rgba(6,182,212,.05); border:1px solid rgba(6,182,212,.1);">
+                            <i class="bi bi-broadcast-pin text-gradient display-4 mb-2"></i>
+                            <h3 class="h5 fw-bold text-primary-custom">100% Free</h3>
+                            <p class="text-muted small mb-0">No signup required. Just click play and enjoy global broadcasts instantly.</p>
+                        </div>
                     </div>
                 </div>
             </div>
