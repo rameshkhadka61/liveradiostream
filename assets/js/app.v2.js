@@ -527,13 +527,23 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Auto-play Logic for Single Station Page
+    // Auto-play Logic for Single Station Page and Front Page
     const heroPlayBtn = document.querySelector('.station-hero .btn-play-trigger');
     if (heroPlayBtn) {
       const stationId = heroPlayBtn.getAttribute('data-station-id');
-      if (audioPlayer.dataset.stationId !== stationId || !isPlaying) {
-        // Short delay to ensure DOM is ready and UI can update
-        setTimeout(() => heroPlayBtn.click(), 300);
+      const isSpotlight = heroPlayBtn.closest('.spotlight-card') !== null;
+
+      if (isSpotlight) {
+        // On front page: only auto-play if no station has been played yet
+        if (!audioPlayer.dataset.stationId) {
+          setTimeout(() => heroPlayBtn.click(), 300);
+        }
+      } else {
+        // On single station page: auto-play if it's a new station or not playing
+        if (audioPlayer.dataset.stationId !== stationId || !isPlaying) {
+          // Short delay to ensure DOM is ready and UI can update
+          setTimeout(() => heroPlayBtn.click(), 300);
+        }
       }
     }
 
