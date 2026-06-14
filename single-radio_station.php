@@ -142,13 +142,13 @@ get_header();
                                 <i class="bi bi-globe me-2"></i>Website
                             </a>
                             <?php endif; ?>
-                            <button class="btn-icon" title="Add to Favorites" aria-label="Add to Favorites">
+                            <button class="btn-icon" id="btn-favorite" data-station-id="<?php echo get_the_ID(); ?>" title="Add to Favorites" aria-label="Add to Favorites">
                                 <i class="bi bi-heart"></i>
                             </button>
-                            <button class="btn-icon" title="Share" aria-label="Share station">
+                            <button class="btn-icon" id="btn-share" data-title="<?php echo esc_attr( get_the_title() ); ?>" data-url="<?php echo esc_url( get_the_permalink() ); ?>" title="Share" aria-label="Share station">
                                 <i class="bi bi-share"></i>
                             </button>
-                            <button class="btn-icon" title="Copy link" aria-label="Copy link">
+                            <button class="btn-icon" id="btn-copy-link" data-url="<?php echo esc_url( get_the_permalink() ); ?>" title="Copy link" aria-label="Copy link">
                                 <i class="bi bi-link-45deg"></i>
                             </button>
                         </div>

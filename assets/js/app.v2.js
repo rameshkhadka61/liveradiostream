@@ -487,6 +487,77 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => heroPlayBtn.click(), 300);
       }
     }
+
+    // Action Buttons (Favorites, Share, Copy Link)
+    const btnFavorite = document.getElementById('btn-favorite');
+    const btnShare = document.getElementById('btn-share');
+    const btnCopyLink = document.getElementById('btn-copy-link');
+
+    if (btnFavorite) {
+      const stationId = btnFavorite.getAttribute('data-station-id');
+      const favorites = JSON.parse(localStorage.getItem('liveradio_favorites') || '[]');
+      const icon = btnFavorite.querySelector('i');
+      
+      // Initialize state
+      if (favorites.includes(stationId)) {
+        icon.classList.remove('bi-heart');
+        icon.classList.add('bi-heart-fill');
+        icon.style.color = '#ef4444';
+      }
+
+      btnFavorite.addEventListener('click', () => {
+        const currentFavorites = JSON.parse(localStorage.getItem('liveradio_favorites') || '[]');
+        const idx = currentFavorites.indexOf(stationId);
+        
+        if (idx === -1) {
+          // Add to favorites
+          currentFavorites.push(stationId);
+          icon.classList.remove('bi-heart');
+          icon.classList.add('bi-heart-fill');
+          icon.style.color = '#ef4444';
+        } else {
+          // Remove from favorites
+          currentFavorites.splice(idx, 1);
+          icon.classList.remove('bi-heart-fill');
+          icon.classList.add('bi-heart');
+          icon.style.color = '';
+        }
+        localStorage.setItem('liveradio_favorites', JSON.stringify(currentFavorites));
+      });
+    }
+
+    if (btnShare) {
+      btnShare.addEventListener('click', () => {
+        const title = btnShare.getAttribute('data-title');
+        const url = btnShare.getAttribute('data-url');
+        
+        if (navigator.share) {
+          navigator.share({
+            title: title,
+            url: url
+          }).catch(console.error);
+        } else {
+          // Fallback to Twitter share if native share is not supported
+          window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(title) + '&url=' + encodeURIComponent(url), '_blank');
+        }
+      });
+    }
+
+    if (btnCopyLink) {
+      btnCopyLink.addEventListener('click', () => {
+        const url = btnCopyLink.getAttribute('data-url');
+        navigator.clipboard.writeText(url).then(() => {
+          const icon = btnCopyLink.querySelector('i');
+          const originalClass = icon.className;
+          icon.className = 'bi bi-check2 text-success';
+          setTimeout(() => {
+            icon.className = originalClass;
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy', err);
+        });
+      });
+    }
   }
 
   // Run initApp on first load
