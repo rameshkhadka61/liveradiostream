@@ -53,7 +53,8 @@ $total_ratings = $rating_data['count'];
     $commenter = wp_get_current_commenter();
 
     $fields = array(
-        'author' => '<div class="col-md-12 mb-3"><input type="text" class="form-control" name="author" id="author" value="' . esc_attr( $commenter['comment_author'] ) . '" placeholder="Your Name" aria-label="Your name" required="required"></div>',
+        'author' => '<div class="col-md-6 mb-3"><input type="text" class="form-control" name="author" id="author" value="' . esc_attr( $commenter['comment_author'] ) . '" placeholder="Your Name *" aria-label="Your name" required="required"></div>',
+        'email'  => '<div class="col-md-6 mb-3"><input type="email" class="form-control" name="email" id="email" value="' . esc_attr(  $commenter['comment_author_email'] ) . '" placeholder="Your Email *" aria-label="Your email" required="required"></div>',
     );
 
     $rating_html = '<div class="col-md-12 mb-3"><select class="form-select" name="rating" id="rating" aria-label="Rating" required>
