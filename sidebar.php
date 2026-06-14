@@ -106,11 +106,18 @@
         <?php endwhile; wp_reset_postdata(); ?>
     </div>
 
-    <!-- Ad Placeholder -->
-    <div class="glass p-4 rounded-4 text-center" style="border:1px dashed rgba(255,255,255,.15);">
-        <i class="bi bi-megaphone fs-2 text-muted mb-2 d-block"></i>
-        <p class="text-muted small mb-0">Advertisement Placeholder</p>
-        <p class="text-muted" style="font-size:.7rem;">300 &times; 250</p>
-    </div>
+    <!-- Sidebar Ad -->
+    <?php $sidebar_ad = get_theme_mod( 'liveradio_ad_sidebar', '' ); ?>
+    <?php if ( ! empty( $sidebar_ad ) ) : ?>
+        <div class="mb-4 text-center">
+            <?php echo $sidebar_ad; ?>
+        </div>
+    <?php elseif ( current_user_can( 'manage_options' ) ) : ?>
+        <div class="glass p-4 rounded-4 text-center mb-4" style="border:1px dashed rgba(255,255,255,.15);">
+            <i class="bi bi-megaphone fs-2 text-muted mb-2"></i>
+            <p class="text-muted small mb-0">Advertisement Placeholder</p>
+            <p class="text-muted" style="font-size:.7rem;">Add code in Customizer</p>
+        </div>
+    <?php endif; ?>
 
 </aside>
