@@ -137,15 +137,13 @@ if ( false === $country_count ) {
                     $feat_genres = get_the_terms( get_the_ID(), 'genre' );
                     $feat_genre = $feat_genres && ! is_wp_error( $feat_genres ) ? $feat_genres[0]->name : 'Music';
             ?>
-            <div class="custom-card p-0 overflow-hidden position-relative spotlight-card">
+            <div class="custom-card p-0 overflow-hidden position-relative spotlight-card station-card">
                 <div class="row g-0">
-                    <div class="col-md-4 spotlight-img-wrapper" style="background:var(--gradient-accent);">
+                    <div class="col-md-4 spotlight-img-wrapper d-flex align-items-center justify-content-center" style="background:var(--bg-secondary);">
                         <?php if ( has_post_thumbnail() ) : ?>
-                            <?php the_post_thumbnail( 'large', array( 'class' => 'w-100 h-100 object-fit-cover opacity-75', 'style' => 'object-fit: cover;' ) ); ?>
+                            <?php the_post_thumbnail( 'large', array( 'class' => 'w-100 h-100 p-4 station-img', 'style' => 'object-fit: contain !important; min-height: 250px;' ) ); ?>
                         <?php else : ?>
-                            <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white" style="min-height: 250px;">
-                                <i class="bi bi-broadcast display-1"></i>
-                            </div>
+                            <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png" alt="<?php the_title_attribute(); ?>" class="w-100 h-100 p-4 station-img" style="object-fit: contain !important; min-height: 250px;">
                         <?php endif; ?>
                         <div class="position-absolute top-0 start-0 m-3">
                             <span class="badge bg-danger shadow-sm"><i class="bi bi-star-fill me-1"></i> Featured</span>
@@ -155,9 +153,15 @@ if ( false === $country_count ) {
                         <div class="p-4 p-lg-5 w-100">
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 <span class="tag-pill" style="font-size:0.7rem; padding:0.2rem 0.6rem;"><?php echo esc_html($feat_genre); ?></span>
-                                <span class="text-muted small"><i class="bi bi-headphones me-1"></i><?php echo number_format_i18n(rand(5000, 20000)); ?> listening</span>
+                                <?php 
+                                    $base_listeners = get_post_meta( get_the_ID(), '_listeners', true );
+                                    if ( ! $base_listeners ) $base_listeners = rand( 5000, 15000 );
+                                    $fluctuation = rand(-5, 5) / 1000;
+                                    $listeners = max( 1, round($base_listeners * (1 + $fluctuation)) + rand(-5, 5) );
+                                ?>
+                                <span class="text-muted small"><i class="bi bi-headphones me-1"></i><?php echo number_format_i18n($listeners); ?> listening</span>
                             </div>
-                            <h3 class="display-6 fw-bold mb-3"><?php the_title(); ?></h3>
+                            <h3 class="display-6 fw-bold mb-3 station-name"><?php the_title(); ?></h3>
                             <p class="text-muted mb-4" style="line-height:1.6; max-width:600px;"><?php echo wp_trim_words( get_the_content(), 25, '...' ); ?></p>
                             <div class="d-flex gap-3">
                                 <button class="btn btn-gradient rounded-pill px-4 btn-play-trigger" data-station-id="<?php echo get_the_ID(); ?>" data-img="<?php echo has_post_thumbnail() ? get_the_post_thumbnail_url(get_the_ID(), 'medium') : get_template_directory_uri() . '/assets/images/placeholder.png'; ?>">
