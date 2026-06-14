@@ -164,12 +164,29 @@ if ( false === $country_count ) {
                     $genres = get_terms( array( 'taxonomy' => 'genre', 'number' => 8, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => false ) );
                     set_transient( 'lr_genres_v5', $genres, 12 * HOUR_IN_SECONDS );
                 }
-                $colors = array('#ef4444', '#3b82f6', '#10b981', '#f59e0b');
-                $icons = array('bi-mic-fill', 'bi-newspaper', 'bi-lightning-fill', 'bi-music-note-beamed');
+                $fallback_colors = array('#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#f43f5e');
                 $i = 0;
                 foreach ( $genres as $genre ) :
-                    $bg = $colors[$i % count($colors)];
-                    $icon = $icons[$i % count($icons)];
+                    $g_name = strtolower($genre->name);
+                    $icon = 'bi-music-note-beamed'; // default
+                    $bg = $fallback_colors[$i % count($fallback_colors)];
+
+                    // Match specific genres to colors and icons
+                    if (strpos($g_name, 'pop') !== false) { $icon = 'bi-stars'; $bg = '#ec4899'; }
+                    elseif (strpos($g_name, 'rock') !== false) { $icon = 'bi-lightning-fill'; $bg = '#ef4444'; }
+                    elseif (strpos($g_name, 'news') !== false) { $icon = 'bi-newspaper'; $bg = '#3b82f6'; }
+                    elseif (strpos($g_name, 'talk') !== false || strpos($g_name, 'podcast') !== false) { $icon = 'bi-mic-fill'; $bg = '#f59e0b'; }
+                    elseif (strpos($g_name, 'jazz') !== false) { $icon = 'bi-music-note-list'; $bg = '#8b5cf6'; }
+                    elseif (strpos($g_name, 'classic') !== false) { $icon = 'bi-bank'; $bg = '#64748b'; }
+                    elseif (strpos($g_name, 'hip hop') !== false || strpos($g_name, 'rap') !== false) { $icon = 'bi-boombox-fill'; $bg = '#f97316'; }
+                    elseif (strpos($g_name, 'electronic') !== false || strpos($g_name, 'dance') !== false || strpos($g_name, 'edm') !== false) { $icon = 'bi-earbuds'; $bg = '#06b6d4'; }
+                    elseif (strpos($g_name, 'country') !== false) { $icon = 'bi-tree-fill'; $bg = '#84cc16'; }
+                    elseif (strpos($g_name, 'sports') !== false) { $icon = 'bi-trophy-fill'; $bg = '#14b8a6'; }
+                    elseif (strpos($g_name, 'religious') !== false || strpos($g_name, 'christian') !== false || strpos($g_name, 'gospel') !== false || strpos($g_name, 'islamic') !== false) { $icon = 'bi-book-half'; $bg = '#0ea5e9'; }
+                    elseif (strpos($g_name, 'r&b') !== false || strpos($g_name, 'soul') !== false) { $icon = 'bi-heart-fill'; $bg = '#e11d48'; }
+                    elseif (strpos($g_name, 'reggae') !== false) { $icon = 'bi-brightness-high-fill'; $bg = '#22c55e'; }
+                    elseif (strpos($g_name, 'latin') !== false) { $icon = 'bi-fire'; $bg = '#dc2626'; }
+                    elseif (strpos($g_name, 'ambient') !== false || strpos($g_name, 'chill') !== false) { $icon = 'bi-cloud-fill'; $bg = '#6366f1'; }
                 ?>
                 <div class="col-6 col-md-3">
                     <a href="<?php echo esc_url( get_term_link( $genre ) ); ?>" class="text-decoration-none">
