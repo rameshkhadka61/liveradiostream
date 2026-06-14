@@ -20,7 +20,7 @@ get_header();
     </section>
 
     <!-- Main Content Container -->
-    <main class="container mb-5 py-5">
+    <main class="container pb-5 mt-4">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="custom-card p-4 p-md-5" style="border-top: 3px solid #06b6d4;">
@@ -45,3 +45,4 @@ get_header();
     <?php endwhile; // End of the loop. ?>
 
 <?php get_footer(); ?>
+

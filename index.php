@@ -5,7 +5,7 @@
 
 get_header(); ?>
 
-    <main class="container py-5 my-5">
+    <main class="container pb-5 mt-4">
         <h1 class="display-5 fw-bold mb-5">Latest Stations</h1>
         
         <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4">
@@ -26,3 +26,4 @@ get_header(); ?>
     </main>
 
 <?php get_footer(); ?>
+

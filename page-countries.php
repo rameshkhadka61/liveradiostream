@@ -32,7 +32,7 @@ get_header(); ?>
     </section>
 
     <!-- Main Content Container -->
-    <main class="container mb-5 py-5">
+    <main class="container pb-5 mt-4">
 
         <!-- All Countries Grid -->
         <section class="mb-5 pb-3">
@@ -82,3 +82,4 @@ get_header(); ?>
     </main>
 
 <?php get_footer(); ?>
+
