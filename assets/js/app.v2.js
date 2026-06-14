@@ -384,6 +384,55 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // AJAX Form Submission (Contact Us)
+    const contactForm = document.getElementById('contactForm');
+    const contactMsgDiv = document.getElementById('contact-message');
+    if (contactForm) {
+      contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!contactForm.checkValidity()) {
+          contactForm.classList.add('was-validated');
+          return;
+        }
+
+        const submitBtn = document.getElementById('contactSubmitBtn');
+        const originalBtnText = submitBtn.innerText;
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Sending...';
+
+        const formData = new FormData(contactForm);
+        formData.append('nonce', liveradio_ajax.nonce); // General nonce fallback if needed, but we check specific nonce in backend
+
+        fetch(liveradio_ajax.ajax_url, {
+          method: 'POST',
+          body: formData
+        })
+          .then(response => response.json())
+          .then(data => {
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalBtnText;
+            contactMsgDiv.classList.remove('d-none', 'alert-danger', 'alert-success');
+            if (data.success) {
+              contactMsgDiv.classList.add('alert-success');
+              contactMsgDiv.textContent = data.data;
+              contactForm.reset();
+              contactForm.classList.remove('was-validated');
+            } else {
+              contactMsgDiv.classList.add('alert-danger');
+              contactMsgDiv.textContent = data.data || 'Error occurred';
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalBtnText;
+            contactMsgDiv.classList.remove('d-none');
+            contactMsgDiv.classList.add('alert-danger');
+            contactMsgDiv.textContent = 'Server error.';
+          });
+      });
+    }
+
     // AJAX Station Filtering
     const filterForm = document.getElementById('taxonomy-filter-form');
     const stationContainer = document.getElementById('station-list-container');

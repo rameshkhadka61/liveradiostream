@@ -196,3 +196,37 @@ function liveradio_ajax_get_stream_url() {
         wp_send_json_error( 'No stream URL found' );
     }
 }
+
+// Contact Us Submission
+function liveradio_contact_submit() {
+    check_ajax_referer( 'liveradio_contact_nonce_action', 'nonce' );
+
+    $name = isset( $_POST['contactName'] ) ? sanitize_text_field( $_POST['contactName'] ) : '';
+    $email = isset( $_POST['contactEmail'] ) ? sanitize_email( $_POST['contactEmail'] ) : '';
+    $subject = isset( $_POST['contactSubject'] ) ? sanitize_text_field( $_POST['contactSubject'] ) : '';
+    $message = isset( $_POST['contactMessage'] ) ? sanitize_textarea_field( $_POST['contactMessage'] ) : '';
+
+    if ( empty( $name ) || empty( $email ) || empty( $subject ) || empty( $message ) ) {
+        wp_send_json_error( 'Please fill in all required fields.' );
+    }
+
+    if ( ! is_email( $email ) ) {
+        wp_send_json_error( 'Please provide a valid email address.' );
+    }
+
+    $admin_email = get_option( 'admin_email' );
+    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $name . ' <' . $email . '>', 'Reply-To: ' . $name . ' <' . $email . '>');
+
+    $mail_subject = 'Contact Form: ' . $subject;
+    $mail_body = '<p><strong>Name:</strong> ' . $name . '</p><p><strong>Email:</strong> ' . $email . '</p><p><strong>Message:</strong><br>' . nl2br($message) . '</p>';
+
+    $sent = wp_mail( $admin_email, $mail_subject, $mail_body, $headers );
+
+    if ( $sent ) {
+        wp_send_json_success( 'Your message has been sent successfully. We will get back to you soon!' );
+    } else {
+        wp_send_json_error( 'There was an error sending your message. Please try again later.' );
+    }
+}
+add_action( 'wp_ajax_liveradio_contact_submit', 'liveradio_contact_submit' );
+add_action( 'wp_ajax_nopriv_liveradio_contact_submit', 'liveradio_contact_submit' );
