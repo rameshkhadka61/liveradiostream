@@ -6,7 +6,7 @@
     </div> <!-- /#swup -->
 
     <!-- Footer -->
-    <footer class="py-5">
+    <footer class="site-footer py-5">
         <div class="container">
             <div class="row g-4">
                 <div class="col-lg-4">
