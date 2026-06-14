@@ -4,9 +4,18 @@
  */
 
 $stream_url = get_post_meta( get_the_ID(), '_stream_url', true );
-$listeners = get_post_meta( get_the_ID(), '_listeners', true );
-if ( ! $listeners ) $listeners = rand( 1000, 15000 ); // fallback mock data
-$listeners_k = round($listeners / 1000, 1) . 'k';
+$base_listeners = get_post_meta( get_the_ID(), '_listeners', true );
+if ( ! $base_listeners ) $base_listeners = rand( 1000, 15000 ); // fallback mock data
+
+// Add random fluctuation to simulate live listeners changing on refresh
+$fluctuation = rand(-50, 50) / 1000;
+$listeners = max( 1, round($base_listeners * (1 + $fluctuation)) + rand(-20, 20) );
+
+if ($listeners >= 1000) {
+    $listeners_k = round($listeners / 1000, 1) . 'k';
+} else {
+    $listeners_k = $listeners;
+}
 
 $genres = get_the_terms( get_the_ID(), 'genre' );
 $genre_name = $genres && ! is_wp_error( $genres ) ? $genres[0]->name : 'Uncategorized';

@@ -15,8 +15,12 @@ get_header();
     $bitrate = get_post_meta( get_the_ID(), '_bitrate', true );
     $frequency = get_post_meta( get_the_ID(), '_frequency', true );
     $owner = get_post_meta( get_the_ID(), '_owner', true );
-    $listeners = get_post_meta( get_the_ID(), '_listeners', true );
-    if ( ! $listeners ) $listeners = rand( 100, 15000 );
+    $base_listeners = get_post_meta( get_the_ID(), '_listeners', true );
+    if ( ! $base_listeners ) $base_listeners = rand( 1000, 15000 );
+    
+    // Add random fluctuation to simulate live listeners changing on refresh
+    $fluctuation = rand(-50, 50) / 1000;
+    $listeners = max( 1, round($base_listeners * (1 + $fluctuation)) + rand(-20, 20) );
     
     $genres = get_the_terms( get_the_ID(), 'genre' );
     $countries = get_the_terms( get_the_ID(), 'country' );
@@ -318,9 +322,18 @@ get_header();
                         $index = 1;
                         if ( $trending_query->have_posts() ) :
                             while ( $trending_query->have_posts() ) : $trending_query->the_post();
-                                $trend_list = get_post_meta( get_the_ID(), '_listeners', true );
-                                if ( ! $trend_list ) $trend_list = rand( 1000, 15000 );
-                                $trend_list_k = round($trend_list / 1000, 1) . 'k';
+                                $base_trend_list = get_post_meta( get_the_ID(), '_listeners', true );
+                                if ( ! $base_trend_list ) $base_trend_list = rand( 1000, 15000 );
+                                
+                                // Add random fluctuation to simulate live listeners changing on refresh
+                                $trend_fluctuation = rand(-50, 50) / 1000;
+                                $trend_list = max( 1, round($base_trend_list * (1 + $trend_fluctuation)) + rand(-20, 20) );
+                                
+                                if ($trend_list >= 1000) {
+                                    $trend_list_k = round($trend_list / 1000, 1) . 'k';
+                                } else {
+                                    $trend_list_k = $trend_list;
+                                }
                                 
                                 $trend_countries = get_the_terms( get_the_ID(), 'country' );
                                 $trend_flag = '';
