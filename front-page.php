@@ -4,17 +4,17 @@
  */
 
 get_header(); 
-$station_count = get_transient('lr_station_count_v4');
+$station_count = get_transient('lr_station_count_v6');
 if ( false === $station_count ) {
     $station_count_obj = wp_count_posts('radio_station');
     $station_count = isset($station_count_obj->publish) ? $station_count_obj->publish : 0;
-    set_transient('lr_station_count_v4', $station_count, 12 * HOUR_IN_SECONDS);
+    set_transient('lr_station_count_v6', $station_count, 12 * HOUR_IN_SECONDS);
 }
 
-$country_count = get_transient('lr_country_count_v4');
+$country_count = get_transient('lr_country_count_v6');
 if ( false === $country_count ) {
     $country_count = wp_count_terms( array( 'taxonomy' => 'country', 'hide_empty' => true ) );
-    set_transient('lr_country_count_v4', $country_count, 12 * HOUR_IN_SECONDS);
+    set_transient('lr_country_count_v6', $country_count, 12 * HOUR_IN_SECONDS);
 }
 ?>
 
@@ -31,10 +31,10 @@ if ( false === $country_count ) {
                         <select name="country" id="hero-country-select" class="search-select border-0 w-auto" aria-label="Select Country" onchange="if(this.options[this.selectedIndex].dataset.link) { if(typeof swup !== 'undefined') swup.navigate(this.options[this.selectedIndex].dataset.link); else window.location.href = this.options[this.selectedIndex].dataset.link; }">
                             <option value="">🌎 All</option>
                             <?php
-                            $countries = get_transient('lr_all_countries_v4');
+                            $countries = get_transient('lr_all_countries_v6');
                             if ( false === $countries ) {
                                 $countries = get_terms( array( 'taxonomy' => 'country', 'hide_empty' => true ) );
-                                set_transient('lr_all_countries_v4', $countries, 12 * HOUR_IN_SECONDS);
+                                set_transient('lr_all_countries_v6', $countries, 12 * HOUR_IN_SECONDS);
                             }
                             foreach ( $countries as $country ) {
                                 echo '<option value="' . esc_attr( $country->slug ) . '" data-link="' . esc_url( get_term_link( $country ) ) . '">' . esc_html( $country->name ) . '</option>';
@@ -49,10 +49,10 @@ if ( false === $country_count ) {
 
             <div class="d-flex flex-wrap justify-content-center gap-2">
                 <?php
-                $trending_countries = get_transient( 'lr_trending_countries_v4' );
+                $trending_countries = get_transient( 'lr_trending_countries_v6' );
                 if ( false === $trending_countries ) {
                     $trending_countries = get_terms( array( 'taxonomy' => 'country', 'number' => 6, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => true ) );
-                    set_transient( 'lr_trending_countries_v4', $trending_countries, 12 * HOUR_IN_SECONDS );
+                    set_transient( 'lr_trending_countries_v6', $trending_countries, 12 * HOUR_IN_SECONDS );
                 }
                 foreach ( $trending_countries as $country ) {
                     echo '<a href="' . esc_url( get_term_link( $country ) ) . '" class="tag-btn">' . esc_html( $country->name ) . '</a>';
@@ -73,10 +73,10 @@ if ( false === $country_count ) {
             </div>
             <div class="row g-4">
                 <?php
-                $top_countries = get_transient( 'lr_top_countries_v4' );
+                $top_countries = get_transient( 'lr_top_countries_v6' );
                 if ( false === $top_countries ) {
                     $top_countries = get_terms( array( 'taxonomy' => 'country', 'number' => 4, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => true ) );
-                    set_transient( 'lr_top_countries_v4', $top_countries, 12 * HOUR_IN_SECONDS );
+                    set_transient( 'lr_top_countries_v6', $top_countries, 12 * HOUR_IN_SECONDS );
                 }
                 foreach ( $top_countries as $country ) :
                     $iso_code = liveradio_get_country_code( $country->slug );
@@ -162,10 +162,10 @@ if ( false === $country_count ) {
             <h2 class="h3 fw-bold mb-4">Explore Genres</h2>
             <div class="row g-3">
                 <?php
-                $genres = get_transient( 'lr_genres_v5' );
+                $genres = get_transient( 'lr_genres_v6' );
                 if ( false === $genres ) {
                     $genres = get_terms( array( 'taxonomy' => 'genre', 'number' => 8, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => true ) );
-                    set_transient( 'lr_genres_v5', $genres, 12 * HOUR_IN_SECONDS );
+                    set_transient( 'lr_genres_v6', $genres, 12 * HOUR_IN_SECONDS );
                 }
                 $fallback_colors = array('#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#f43f5e', '#84cc16', '#14b8a6', '#6366f1', '#d946ef', '#f97316', '#0ea5e9');
                 $fallback_icons = array('bi-music-note-beamed', 'bi-mic-fill', 'bi-lightning-fill', 'bi-stars', 'bi-newspaper', 'bi-boombox-fill', 'bi-earbuds', 'bi-heart-fill', 'bi-tree-fill', 'bi-trophy-fill', 'bi-cloud-fill', 'bi-bank', 'bi-brightness-high-fill', 'bi-fire');
