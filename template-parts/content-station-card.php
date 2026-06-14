@@ -7,9 +7,9 @@ $stream_url = get_post_meta( get_the_ID(), '_stream_url', true );
 $base_listeners = get_post_meta( get_the_ID(), '_listeners', true );
 if ( ! $base_listeners ) $base_listeners = rand( 1000, 15000 ); // fallback mock data
 
-// Add random fluctuation to simulate live listeners changing on refresh
-$fluctuation = rand(-50, 50) / 1000;
-$listeners = max( 1, round($base_listeners * (1 + $fluctuation)) + rand(-20, 20) );
+// Add random fluctuation to simulate live listeners changing realistically on refresh
+$fluctuation = rand(-5, 5) / 1000;
+$listeners = max( 1, round($base_listeners * (1 + $fluctuation)) + rand(-5, 5) );
 
 if ($listeners >= 1000) {
     $listeners_k = round($listeners / 1000, 1) . 'k';

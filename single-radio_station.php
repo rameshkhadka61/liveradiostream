@@ -18,9 +18,9 @@ get_header();
     $base_listeners = get_post_meta( get_the_ID(), '_listeners', true );
     if ( ! $base_listeners ) $base_listeners = rand( 1000, 15000 );
     
-    // Add random fluctuation to simulate live listeners changing on refresh
-    $fluctuation = rand(-50, 50) / 1000;
-    $listeners = max( 1, round($base_listeners * (1 + $fluctuation)) + rand(-20, 20) );
+    // Add random fluctuation to simulate live listeners changing realistically on refresh
+    $fluctuation = rand(-5, 5) / 1000;
+    $listeners = max( 1, round($base_listeners * (1 + $fluctuation)) + rand(-5, 5) );
     
     $genres = get_the_terms( get_the_ID(), 'genre' );
     $countries = get_the_terms( get_the_ID(), 'country' );
@@ -255,13 +255,67 @@ get_header();
             <!-- ===== RIGHT SIDEBAR ===== -->
             <div class="col-lg-4">
 
+                <!-- Trending Now -->
+                <div class="custom-card p-4 mb-4">
+                    <h2 class="h5 fw-bold mb-3"><i class="bi bi-fire me-2" style="color:#f59e0b;"></i>Trending Now</h2>
+                    <ol class="list-unstyled mb-0">
+                        <?php
+                        $trending_args = array(
+                            'post_type'      => 'radio_station',
+                            'posts_per_page' => 3,
+                            'orderby'        => 'meta_value_num',
+                            'meta_key'       => '_listeners',
+                            'order'          => 'DESC'
+                        );
+                        $trending_query = new WP_Query( $trending_args );
+                        $index = 1;
+                        if ( $trending_query->have_posts() ) :
+                            while ( $trending_query->have_posts() ) : $trending_query->the_post();
+                                $base_trend_list = get_post_meta( get_the_ID(), '_listeners', true );
+                                if ( ! $base_trend_list ) $base_trend_list = rand( 1000, 15000 );
+                                
+                                // Add random fluctuation to simulate live listeners changing realistically on refresh
+                                $trend_fluctuation = rand(-5, 5) / 1000;
+                                $trend_list = max( 1, round($base_trend_list * (1 + $trend_fluctuation)) + rand(-5, 5) );
+                                
+                                if ($trend_list >= 1000) {
+                                    $trend_list_k = round($trend_list / 1000, 1) . 'k';
+                                } else {
+                                    $trend_list_k = $trend_list;
+                                }
+                                
+                                $trend_countries = get_the_terms( get_the_ID(), 'country' );
+                                $trend_flag = '';
+                                if ( $trend_countries && ! is_wp_error( $trend_countries ) ) {
+                                    $trend_flag = strtoupper(liveradio_get_country_code($trend_countries[0]->slug)) . ' ';
+                                }
+                                
+                                $icon = $index == 1 || $index == 3 ? '<i class="bi bi-arrow-up-right-circle-fill" style="color:#10b981;"></i>' : '<i class="bi bi-dash-circle-fill" style="color:var(--accent-cyan);"></i>';
+                        ?>
+                        <li class="info-row">
+                            <span class="text-muted fw-bold me-2" style="width:20px;"><?php echo $index; ?></span>
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold small"><a href="<?php the_permalink(); ?>" class="text-decoration-none text-primary-custom"><?php the_title(); ?></a></div>
+                                <div class="text-muted" style="font-size:.75rem;"><?php echo esc_html( $trend_flag . $trend_list_k . ' listening' ); ?></div>
+                            </div>
+                            <?php echo $icon; ?>
+                        </li>
+                        <?php
+                            $index++;
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                        ?>
+                    </ol>
+                </div>
+
                 <!-- Related Stations -->
                 <div class="mb-4">
                     <h2 class="h5 fw-bold mb-3">Related Stations</h2>
                     <?php
                     $related_args = array(
                         'post_type'      => 'radio_station',
-                        'posts_per_page' => 3,
+                        'posts_per_page' => 15,
                         'post__not_in'   => array( get_the_ID() ),
                         'orderby'        => 'rand'
                     );
@@ -304,60 +358,6 @@ get_header();
                         wp_reset_postdata();
                     endif;
                     ?>
-                </div>
-
-                <!-- Trending Now -->
-                <div class="custom-card p-4 mb-4">
-                    <h2 class="h5 fw-bold mb-3"><i class="bi bi-fire me-2" style="color:#f59e0b;"></i>Trending Now</h2>
-                    <ol class="list-unstyled mb-0">
-                        <?php
-                        $trending_args = array(
-                            'post_type'      => 'radio_station',
-                            'posts_per_page' => 3,
-                            'orderby'        => 'meta_value_num',
-                            'meta_key'       => '_listeners',
-                            'order'          => 'DESC'
-                        );
-                        $trending_query = new WP_Query( $trending_args );
-                        $index = 1;
-                        if ( $trending_query->have_posts() ) :
-                            while ( $trending_query->have_posts() ) : $trending_query->the_post();
-                                $base_trend_list = get_post_meta( get_the_ID(), '_listeners', true );
-                                if ( ! $base_trend_list ) $base_trend_list = rand( 1000, 15000 );
-                                
-                                // Add random fluctuation to simulate live listeners changing on refresh
-                                $trend_fluctuation = rand(-50, 50) / 1000;
-                                $trend_list = max( 1, round($base_trend_list * (1 + $trend_fluctuation)) + rand(-20, 20) );
-                                
-                                if ($trend_list >= 1000) {
-                                    $trend_list_k = round($trend_list / 1000, 1) . 'k';
-                                } else {
-                                    $trend_list_k = $trend_list;
-                                }
-                                
-                                $trend_countries = get_the_terms( get_the_ID(), 'country' );
-                                $trend_flag = '';
-                                if ( $trend_countries && ! is_wp_error( $trend_countries ) ) {
-                                    $trend_flag = strtoupper(liveradio_get_country_code($trend_countries[0]->slug)) . ' ';
-                                }
-                                
-                                $icon = $index == 1 || $index == 3 ? '<i class="bi bi-arrow-up-right-circle-fill" style="color:#10b981;"></i>' : '<i class="bi bi-dash-circle-fill" style="color:var(--accent-cyan);"></i>';
-                        ?>
-                        <li class="info-row">
-                            <span class="text-muted fw-bold me-2" style="width:20px;"><?php echo $index; ?></span>
-                            <div class="flex-grow-1">
-                                <div class="fw-semibold small"><a href="<?php the_permalink(); ?>" class="text-decoration-none text-primary-custom"><?php the_title(); ?></a></div>
-                                <div class="text-muted" style="font-size:.75rem;"><?php echo esc_html( $trend_flag . $trend_list_k . ' listening' ); ?></div>
-                            </div>
-                            <?php echo $icon; ?>
-                        </li>
-                        <?php
-                            $index++;
-                            endwhile;
-                            wp_reset_postdata();
-                        endif;
-                        ?>
-                    </ol>
                 </div>
 
 
