@@ -123,10 +123,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (card) {
         const stationName = card.querySelector('.station-name')?.innerText || 'Unknown Station';
         document.getElementById('player-station-name').innerText = stationName;
+        
+        const fpName = document.getElementById('front-playing-name');
+        if (fpName) fpName.innerText = stationName;
 
         const imgSrc = card.querySelector('.station-img')?.src || card.querySelector('.station-large-logo')?.src;
         if (imgSrc) {
           document.getElementById('player-thumbnail').src = imgSrc;
+          
+          const fpImg = document.getElementById('front-playing-img');
+          if (fpImg) fpImg.src = imgSrc;
         }
       }
 
@@ -204,27 +210,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const liveDot = document.querySelector('#sticky-player .live-dot');
     const details = document.getElementById('player-station-details');
-    if (liveDot) {
-      if (play) {
-        liveDot.style.backgroundColor = '#10b981';
-        if (details) details.innerText = 'Live Radio';
-      } else if (isError) {
-        liveDot.style.backgroundColor = '#ef4444';
-      } else {
-        liveDot.style.backgroundColor = '';
-        if (details) details.innerText = 'Paused';
-      }
+    const fpStatus = document.getElementById('front-playing-status');
+
+    if (play) {
+      if (liveDot) liveDot.style.backgroundColor = '#10b981';
+      if (details) details.innerText = 'Live Radio';
+      if (fpStatus) fpStatus.innerText = 'Now playing \u00b7 Live';
+    } else if (isError) {
+      if (liveDot) liveDot.style.backgroundColor = '#ef4444';
+      if (fpStatus) fpStatus.innerText = 'Stream Error';
+    } else {
+      if (liveDot) liveDot.style.backgroundColor = '';
+      if (details) details.innerText = 'Paused';
+      if (fpStatus) fpStatus.innerText = 'Paused';
     }
 
     if (globalPlayIcon && equalizer) {
+      const fpEq = document.getElementById('front-playing-eq');
       if (isPlaying) {
         globalPlayIcon.classList.remove('bi-play-fill');
         globalPlayIcon.classList.add('bi-pause-fill');
         equalizer.classList.remove('paused');
+        if (fpEq) fpEq.classList.remove('paused');
       } else {
         globalPlayIcon.classList.remove('bi-pause-fill');
         globalPlayIcon.classList.add('bi-play-fill');
         equalizer.classList.add('paused');
+        if (fpEq) fpEq.classList.add('paused');
       }
     }
   }

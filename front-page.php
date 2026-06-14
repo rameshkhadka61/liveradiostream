@@ -257,13 +257,13 @@ if ( false === $country_count ) {
 
                         <div class="position-absolute glass rounded-3 px-3 py-2 d-flex align-items-center gap-3 shadow"
                             style="bottom:24px; left:-16px; min-width:220px; border:1px solid rgba(6,182,212,.25); backdrop-filter:blur(12px);">
-                            <img src="https://images.unsplash.com/photo-1619983081563-430f63602796?w=80&q=80"
+                            <img id="front-playing-img" src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png"
                                 alt="Station" style="width:40px;height:40px;border-radius:8px;object-fit:contain;background:#fff;padding:2px;">
                             <div>
-                                <div class="small fw-bold" style="color:var(--text-primary);">Capital FM</div>
-                                <div style="font-size:.72rem; color:var(--text-secondary);">Now playing &middot; Pop</div>
+                                <div id="front-playing-name" class="small fw-bold" style="color:var(--text-primary);">Ready to Play</div>
+                                <div id="front-playing-status" style="font-size:.72rem; color:var(--text-secondary);">Pick a station</div>
                             </div>
-                            <div class="equalizer ms-auto" style="height:18px;">
+                            <div id="front-playing-eq" class="equalizer ms-auto paused" style="height:18px;">
                                 <div class="equalizer-bar"></div>
                                 <div class="equalizer-bar"></div>
                                 <div class="equalizer-bar"></div>
