@@ -607,6 +607,51 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
     }
+
+    // Report Broken Stream
+    const btnReport = document.getElementById('btn-report');
+    if (btnReport) {
+      btnReport.addEventListener('click', () => {
+        const stationId = btnReport.getAttribute('data-station-id');
+        if (btnReport.classList.contains('reported')) return;
+        
+        btnReport.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+        btnReport.disabled = true;
+        
+        // Ensure liveradio_ajax is defined
+        if (typeof liveradio_ajax === 'undefined') {
+          console.error('liveradio_ajax not defined');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('action', 'liveradio_report_station');
+        formData.append('station_id', stationId);
+        formData.append('nonce', liveradio_ajax.nonce);
+
+        fetch(liveradio_ajax.ajax_url, {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            btnReport.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+            btnReport.classList.add('reported');
+            alert('Thanks! We will review this station.');
+          } else {
+            btnReport.innerHTML = '<i class="bi bi-exclamation-triangle"></i>';
+            btnReport.disabled = false;
+            alert('Error reporting station.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          btnReport.innerHTML = '<i class="bi bi-exclamation-triangle"></i>';
+          btnReport.disabled = false;
+        });
+      });
+    }
   }
 
   // Run initApp on first load
@@ -619,67 +664,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-
-    // Report Broken Stream
-    .on('click', '#btn-report', function() {
-        const btn = ;
-        const stationId = btn.data('station-id');
-        
-        if (btn.hasClass('reported')) return;
-        
-        btn.html('<i class="bi bi-hourglass-split"></i>').prop('disabled', true);
-        
-        $.ajax({
-            url: liveradio_ajax.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'liveradio_report_station',
-                station_id: stationId,
-                nonce: liveradio_ajax.nonce
-            },
-            success: function(response) {
-                if (response.success) {
-                    btn.html('<i class="bi bi-check-circle-fill"></i>').addClass('reported');
-                    alert('Thanks! We will review this station.');
-                } else {
-                    btn.html('<i class="bi bi-exclamation-triangle"></i>').prop('disabled', false);
-                    alert('Error reporting station.');
-                }
-            },
-            error: function() {
-                btn.html('<i class="bi bi-exclamation-triangle"></i>').prop('disabled', false);
-            }
-        });
-    });
-
-    // Report Broken Stream
-    $(document).on('click', '#btn-report', function() {
-        const btn = $(this);
-        const stationId = btn.data('station-id');
-        
-        if (btn.hasClass('reported')) return;
-        
-        btn.html('<i class="bi bi-hourglass-split"></i>').prop('disabled', true);
-        
-        $.ajax({
-            url: liveradio_ajax.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'liveradio_report_station',
-                station_id: stationId,
-                nonce: liveradio_ajax.nonce
-            },
-            success: function(response) {
-                if (response.success) {
-                    btn.html('<i class="bi bi-check-circle-fill"></i>').addClass('reported');
-                    alert('Thanks! We will review this station.');
-                } else {
-                    btn.html('<i class="bi bi-exclamation-triangle"></i>').prop('disabled', false);
-                    alert('Error reporting station.');
-                }
-            },
-            error: function() {
-                btn.html('<i class="bi bi-exclamation-triangle"></i>').prop('disabled', false);
-            }
-        });
-    });
