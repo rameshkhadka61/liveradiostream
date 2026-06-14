@@ -589,3 +589,17 @@ function liveradio_custom_login_scripts() {
     </style>
     <?php
 }
+
+/**
+ * Modify queries for taxonomy archives
+ */
+function liveradio_modify_taxonomy_query( $query ) {
+    if ( ! is_admin() && $query->is_main_query() ) {
+        if ( is_tax( 'genre' ) || is_tax( 'country' ) || is_post_type_archive( 'radio_station' ) ) {
+            $query->set( 'posts_per_page', 20 );
+            $query->set( 'orderby', 'title' );
+            $query->set( 'order', 'ASC' );
+        }
+    }
+}
+add_action( 'pre_get_posts', 'liveradio_modify_taxonomy_query' );

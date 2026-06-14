@@ -101,7 +101,7 @@ if ( false === $country_count ) {
         $section_title = "Top Trending Stations";
         $query_args = array(
             'post_type'      => 'radio_station',
-            'posts_per_page' => 8,
+            'posts_per_page' => 10,
         );
         $has_country_filter = false;
 
@@ -159,10 +159,10 @@ if ( false === $country_count ) {
             <h2 class="h3 fw-bold mb-4">Explore Genres</h2>
             <div class="row g-3">
                 <?php
-                $genres = get_transient( 'lr_genres_v4' );
+                $genres = get_transient( 'lr_genres_v5' );
                 if ( false === $genres ) {
-                    $genres = get_terms( array( 'taxonomy' => 'genre', 'number' => 4, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => false ) );
-                    set_transient( 'lr_genres_v4', $genres, 12 * HOUR_IN_SECONDS );
+                    $genres = get_terms( array( 'taxonomy' => 'genre', 'number' => 8, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => false ) );
+                    set_transient( 'lr_genres_v5', $genres, 12 * HOUR_IN_SECONDS );
                 }
                 $colors = array('#ef4444', '#3b82f6', '#10b981', '#f59e0b');
                 $icons = array('bi-mic-fill', 'bi-newspaper', 'bi-lightning-fill', 'bi-music-note-beamed');
