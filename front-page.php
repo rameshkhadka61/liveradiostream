@@ -149,9 +149,9 @@ if ( false === $country_count ) {
                             <span class="badge bg-danger shadow-sm"><i class="bi bi-star-fill me-1"></i> Featured</span>
                         </div>
                     </div>
-                    <div class="col-md-8 d-flex align-items-center">
+                    <div class="col-md-8 d-flex align-items-center text-center">
                         <div class="p-4 p-lg-5 w-100">
-                            <div class="d-flex align-items-center gap-2 mb-2">
+                            <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
                                 <span class="tag-pill" style="font-size:0.7rem; padding:0.2rem 0.6rem;"><?php echo esc_html($feat_genre); ?></span>
                                 <?php 
                                     $base_listeners = get_post_meta( get_the_ID(), '_listeners', true );
@@ -162,8 +162,8 @@ if ( false === $country_count ) {
                                 <span class="text-muted small"><i class="bi bi-headphones me-1"></i><?php echo number_format_i18n($listeners); ?> listening</span>
                             </div>
                             <h3 class="display-6 fw-bold mb-3 station-name"><?php the_title(); ?></h3>
-                            <p class="text-muted mb-4" style="line-height:1.6; max-width:600px;"><?php echo wp_trim_words( get_the_content(), 25, '...' ); ?></p>
-                            <div class="d-flex gap-3">
+                            <p class="text-muted mb-4 mx-auto" style="line-height:1.6; max-width:600px;"><?php echo wp_trim_words( wp_strip_all_tags( get_the_content() ), 45, '...' ); ?></p>
+                            <div class="d-flex justify-content-center gap-3">
                                 <button class="btn btn-gradient rounded-pill px-4 btn-play-trigger" data-station-id="<?php echo get_the_ID(); ?>" data-img="<?php echo has_post_thumbnail() ? get_the_post_thumbnail_url(get_the_ID(), 'medium') : get_template_directory_uri() . '/assets/images/placeholder.png'; ?>">
                                     <i class="bi bi-play-circle-fill me-2"></i>Listen Now
                                 </button>
