@@ -137,7 +137,7 @@ if ( false === $country_count ) {
                     $feat_genres = get_the_terms( get_the_ID(), 'genre' );
                     $feat_genre = $feat_genres && ! is_wp_error( $feat_genres ) ? $feat_genres[0]->name : 'Music';
             ?>
-            <div class="custom-card p-0 overflow-hidden position-relative spotlight-card station-card station-hero text-center text-md-start" style="margin-top:0; border:1px solid var(--glass-border);">
+            <div class="custom-card p-0 overflow-hidden position-relative spotlight-card station-hero text-center text-md-start" style="margin-top:0; border:1px solid var(--glass-border);">
                 <!-- Blurred background image like single page -->
                 <?php if ( has_post_thumbnail() ) : ?>
                     <?php the_post_thumbnail( 'large', array( 'class' => 'station-hero-bg' ) ); ?>
