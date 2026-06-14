@@ -8,7 +8,7 @@ get_header(); ?>
     <?php 
     $country_count = get_transient('lr_country_count_v4');
     if ( false === $country_count ) {
-        $country_count = wp_count_terms( array( 'taxonomy' => 'country', 'hide_empty' => false ) );
+        $country_count = wp_count_terms( array( 'taxonomy' => 'country', 'hide_empty' => true ) );
         set_transient('lr_country_count_v4', $country_count, 12 * HOUR_IN_SECONDS);
     }
     ?>
@@ -39,15 +39,15 @@ get_header(); ?>
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <h2 class="h3 fw-bold mb-0">All Countries</h2>
                 <select class="form-select w-auto" aria-label="Sort by" onchange="location = this.value;">
-                    <option value="" selected>Sort by: Popular</option>
-                    <option value="?orderby=name">Sort by: A-Z</option>
+                    <option value="" selected>Sort by: A-Z</option>
+                    <option value="?orderby=popular">Sort by: Popular</option>
                 </select>
             </div>
             
             <div class="row g-4">
                 <?php
-                $orderby = isset( $_GET['orderby'] ) && $_GET['orderby'] === 'name' ? 'name' : 'count';
-                $order = isset( $_GET['orderby'] ) && $_GET['orderby'] === 'name' ? 'ASC' : 'DESC';
+                $orderby = isset( $_GET['orderby'] ) && $_GET['orderby'] === 'popular' ? 'count' : 'name';
+                $order = isset( $_GET['orderby'] ) && $_GET['orderby'] === 'popular' ? 'DESC' : 'ASC';
                 
                 $transient_key = 'lr_all_countries_v4_' . $orderby . '_' . $order;
                 $countries = get_transient($transient_key);
@@ -55,7 +55,7 @@ get_header(); ?>
                 if ( false === $countries ) {
                     $countries = get_terms( array(
                         'taxonomy'   => 'country',
-                        'hide_empty' => false,
+                        'hide_empty' => true,
                         'orderby'    => $orderby,
                         'order'      => $order,
                     ) );

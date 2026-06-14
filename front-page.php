@@ -13,7 +13,7 @@ if ( false === $station_count ) {
 
 $country_count = get_transient('lr_country_count_v4');
 if ( false === $country_count ) {
-    $country_count = wp_count_terms( array( 'taxonomy' => 'country', 'hide_empty' => false ) );
+    $country_count = wp_count_terms( array( 'taxonomy' => 'country', 'hide_empty' => true ) );
     set_transient('lr_country_count_v4', $country_count, 12 * HOUR_IN_SECONDS);
 }
 ?>
@@ -33,7 +33,7 @@ if ( false === $country_count ) {
                             <?php
                             $countries = get_transient('lr_all_countries_v4');
                             if ( false === $countries ) {
-                                $countries = get_terms( array( 'taxonomy' => 'country', 'hide_empty' => false ) );
+                                $countries = get_terms( array( 'taxonomy' => 'country', 'hide_empty' => true ) );
                                 set_transient('lr_all_countries_v4', $countries, 12 * HOUR_IN_SECONDS);
                             }
                             foreach ( $countries as $country ) {
@@ -51,7 +51,7 @@ if ( false === $country_count ) {
                 <?php
                 $trending_countries = get_transient( 'lr_trending_countries_v4' );
                 if ( false === $trending_countries ) {
-                    $trending_countries = get_terms( array( 'taxonomy' => 'country', 'number' => 6, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => false ) );
+                    $trending_countries = get_terms( array( 'taxonomy' => 'country', 'number' => 6, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => true ) );
                     set_transient( 'lr_trending_countries_v4', $trending_countries, 12 * HOUR_IN_SECONDS );
                 }
                 foreach ( $trending_countries as $country ) {
@@ -75,7 +75,7 @@ if ( false === $country_count ) {
                 <?php
                 $top_countries = get_transient( 'lr_top_countries_v4' );
                 if ( false === $top_countries ) {
-                    $top_countries = get_terms( array( 'taxonomy' => 'country', 'number' => 4, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => false ) );
+                    $top_countries = get_terms( array( 'taxonomy' => 'country', 'number' => 4, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => true ) );
                     set_transient( 'lr_top_countries_v4', $top_countries, 12 * HOUR_IN_SECONDS );
                 }
                 foreach ( $top_countries as $country ) :
@@ -164,7 +164,7 @@ if ( false === $country_count ) {
                 <?php
                 $genres = get_transient( 'lr_genres_v5' );
                 if ( false === $genres ) {
-                    $genres = get_terms( array( 'taxonomy' => 'genre', 'number' => 8, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => false ) );
+                    $genres = get_terms( array( 'taxonomy' => 'genre', 'number' => 8, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => true ) );
                     set_transient( 'lr_genres_v5', $genres, 12 * HOUR_IN_SECONDS );
                 }
                 $fallback_colors = array('#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#f43f5e', '#84cc16', '#14b8a6', '#6366f1', '#d946ef', '#f97316', '#0ea5e9');
