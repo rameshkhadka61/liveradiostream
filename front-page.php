@@ -148,14 +148,14 @@ if ( false === $country_count ) {
                 <div class="station-hero-content position-relative z-1 w-100">
                     <div class="row g-0">
                         <div class="col-md-4 p-4 p-lg-5 d-flex align-items-center justify-content-center">
-                            <!-- Station Logo exactly like single page -->
+                            <!-- Station Logo -->
                             <div class="position-relative">
                                 <?php if ( has_post_thumbnail() ) : ?>
-                                    <?php the_post_thumbnail( 'medium', array( 'class' => 'station-large-logo station-img bg-white p-2', 'style' => 'object-fit: contain !important;' ) ); ?>
+                                    <?php the_post_thumbnail( 'large', array( 'class' => 'spotlight-logo station-img bg-white p-2', 'style' => 'object-fit: contain !important;' ) ); ?>
                                 <?php else : ?>
-                                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png" alt="Station Logo" class="station-large-logo station-img bg-white p-2" style="object-fit: contain !important;">
+                                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png" alt="Station Logo" class="spotlight-logo station-img bg-white p-2" style="object-fit: contain !important;">
                                 <?php endif; ?>
-                                <div class="position-absolute top-0 start-0 translate-middle">
+                                <div class="position-absolute top-0 start-0 translate-middle" style="z-index: 2;">
                                     <span class="badge bg-danger shadow-sm"><i class="bi bi-star-fill me-1"></i> Featured</span>
                                 </div>
                             </div>
