@@ -93,9 +93,9 @@
         ?>
         <a href="<?php the_permalink(); ?>" class="d-flex align-items-center gap-3 text-decoration-none <?php echo $mb; ?>">
             <?php if ( has_post_thumbnail() ) : ?>
-                <?php the_post_thumbnail( 'thumbnail', array( 'style' => 'width:44px;height:44px;border-radius:8px;object-fit:contain;background:#fff;padding:2px;' ) ); ?>
+                <?php the_post_thumbnail( 'thumbnail', array( 'style' => 'width:44px;height:44px;border-radius:8px;object-fit:contain;background:#fff;padding:4px;box-sizing:border-box;' ) ); ?>
             <?php else : ?>
-                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png" alt="" style="width:44px;height:44px;border-radius:8px;object-fit:contain;background:#fff;padding:2px;">
+                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png" alt="" style="width:44px;height:44px;border-radius:8px;object-fit:contain;background:#fff;padding:4px;box-sizing:border-box;">
             <?php endif; ?>
             <div>
                 <div class="small fw-semibold text-primary-custom"><?php the_title(); ?></div>
@@ -121,3 +121,4 @@
     <?php endif; ?>
 
 </aside>
+
