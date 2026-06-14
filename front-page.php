@@ -137,7 +137,7 @@ if ( false === $country_count ) {
                     $feat_genres = get_the_terms( get_the_ID(), 'genre' );
                     $feat_genre = $feat_genres && ! is_wp_error( $feat_genres ) ? $feat_genres[0]->name : 'Music';
             ?>
-            <div class="custom-card p-0 overflow-hidden position-relative spotlight-card station-card station-hero text-center" style="margin-top:0; border:1px solid var(--glass-border);">
+            <div class="custom-card p-0 overflow-hidden position-relative spotlight-card station-card station-hero text-center text-md-start" style="margin-top:0; border:1px solid var(--glass-border);">
                 <!-- Blurred background image like single page -->
                 <?php if ( has_post_thumbnail() ) : ?>
                     <?php the_post_thumbnail( 'large', array( 'class' => 'station-hero-bg' ) ); ?>
@@ -145,44 +145,48 @@ if ( false === $country_count ) {
                     <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png" alt="" class="station-hero-bg">
                 <?php endif; ?>
                 
-                <div class="station-hero-content p-4 p-lg-5 position-relative z-1 w-100">
-                    <div class="position-absolute top-0 start-0 m-3">
-                        <span class="badge bg-danger shadow-sm"><i class="bi bi-star-fill me-1"></i> Featured</span>
-                    </div>
-
-                    <!-- Station Logo exactly like single page but centered -->
-                    <div class="mb-4 d-flex justify-content-center">
-                        <div class="position-relative" style="display:inline-block;">
-                            <?php if ( has_post_thumbnail() ) : ?>
-                                <?php the_post_thumbnail( 'medium', array( 'class' => 'station-large-logo station-img bg-white p-2', 'style' => 'object-fit: contain !important;' ) ); ?>
-                            <?php else : ?>
-                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png" alt="Station Logo" class="station-large-logo station-img bg-white p-2" style="object-fit: contain !important;">
-                            <?php endif; ?>
+                <div class="station-hero-content position-relative z-1 w-100">
+                    <div class="row g-0">
+                        <div class="col-md-4 p-4 p-lg-5 d-flex align-items-center justify-content-center">
+                            <!-- Station Logo exactly like single page -->
+                            <div class="position-relative">
+                                <?php if ( has_post_thumbnail() ) : ?>
+                                    <?php the_post_thumbnail( 'medium', array( 'class' => 'station-large-logo station-img bg-white p-2', 'style' => 'object-fit: contain !important;' ) ); ?>
+                                <?php else : ?>
+                                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png" alt="Station Logo" class="station-large-logo station-img bg-white p-2" style="object-fit: contain !important;">
+                                <?php endif; ?>
+                                <div class="position-absolute top-0 start-0 translate-middle">
+                                    <span class="badge bg-danger shadow-sm"><i class="bi bi-star-fill me-1"></i> Featured</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
-                        <span class="tag-pill" style="font-size:0.7rem; padding:0.2rem 0.6rem;"><?php echo esc_html($feat_genre); ?></span>
-                        <?php 
-                            $base_listeners = get_post_meta( get_the_ID(), '_listeners', true );
-                            if ( ! $base_listeners ) $base_listeners = rand( 5000, 15000 );
-                            $fluctuation = rand(-5, 5) / 1000;
-                            $listeners = max( 1, round($base_listeners * (1 + $fluctuation)) + rand(-5, 5) );
-                        ?>
-                        <span class="text-muted small"><i class="bi bi-headphones me-1"></i><?php echo number_format_i18n($listeners); ?> listening</span>
-                    </div>
-                    
-                    <h3 class="display-6 fw-bold mb-3 station-name"><?php the_title(); ?></h3>
-                    
-                    <p class="text-muted mb-4 mx-auto" style="line-height:1.6; max-width:600px;">
-                        <?php echo wp_trim_words( wp_strip_all_tags( get_the_content() ), 45, '...' ); ?>
-                    </p>
-                    
-                    <div class="d-flex justify-content-center gap-3">
-                        <button class="btn btn-gradient rounded-pill px-4 btn-play-trigger" data-station-id="<?php echo get_the_ID(); ?>" data-img="<?php echo has_post_thumbnail() ? get_the_post_thumbnail_url(get_the_ID(), 'medium') : get_template_directory_uri() . '/assets/images/placeholder.png'; ?>">
-                            <i class="bi bi-play-circle-fill me-2"></i>Listen Now
-                        </button>
-                        <a href="<?php the_permalink(); ?>" class="btn rounded-pill px-4 btn-glass-outline"><i class="bi bi-info-circle me-2"></i>View Details</a>
+                        <div class="col-md-8 p-4 p-lg-5 d-flex align-items-center">
+                            <div class="w-100">
+                                <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-2">
+                                    <span class="tag-pill" style="font-size:0.7rem; padding:0.2rem 0.6rem;"><?php echo esc_html($feat_genre); ?></span>
+                                    <?php 
+                                        $base_listeners = get_post_meta( get_the_ID(), '_listeners', true );
+                                        if ( ! $base_listeners ) $base_listeners = rand( 5000, 15000 );
+                                        $fluctuation = rand(-5, 5) / 1000;
+                                        $listeners = max( 1, round($base_listeners * (1 + $fluctuation)) + rand(-5, 5) );
+                                    ?>
+                                    <span class="text-muted small"><i class="bi bi-headphones me-1"></i><?php echo number_format_i18n($listeners); ?> listening</span>
+                                </div>
+                                
+                                <h3 class="display-6 fw-bold mb-3 station-name"><?php the_title(); ?></h3>
+                                
+                                <p class="text-muted mb-4 mx-auto mx-md-0" style="line-height:1.6; max-width:600px;">
+                                    <?php echo wp_trim_words( wp_strip_all_tags( get_the_content() ), 45, '...' ); ?>
+                                </p>
+                                
+                                <div class="d-flex justify-content-center justify-content-md-start gap-3">
+                                    <button class="btn btn-gradient rounded-pill px-4 btn-play-trigger" data-station-id="<?php echo get_the_ID(); ?>" data-img="<?php echo has_post_thumbnail() ? get_the_post_thumbnail_url(get_the_ID(), 'medium') : get_template_directory_uri() . '/assets/images/placeholder.png'; ?>">
+                                        <i class="bi bi-play-circle-fill me-2"></i>Listen Now
+                                    </button>
+                                    <a href="<?php the_permalink(); ?>" class="btn rounded-pill px-4 btn-glass-outline"><i class="bi bi-info-circle me-2"></i>View Details</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
