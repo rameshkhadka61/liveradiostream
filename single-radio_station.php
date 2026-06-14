@@ -138,7 +138,7 @@ get_header();
                                 <i class="bi bi-play-circle-fill me-2"></i>Play Station
                             </button>
                             <?php if ( $website_url ) : ?>
-                            <a href="<?php echo esc_url( $website_url ); ?>" target="_blank" class="btn rounded-pill px-4" style="border:1px solid var(--glass-border); color:var(--text-primary);">
+                            <a href="<?php echo esc_url( $website_url ); ?>" target="_blank" class="btn rounded-pill px-4 btn-glass-outline">
                                 <i class="bi bi-globe me-2"></i>Website
                             </a>
                             <?php endif; ?>

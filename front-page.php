@@ -167,7 +167,7 @@ if ( false === $country_count ) {
                                 <button class="btn btn-gradient rounded-pill px-4 btn-play-trigger" data-station-id="<?php echo get_the_ID(); ?>" data-img="<?php echo has_post_thumbnail() ? get_the_post_thumbnail_url(get_the_ID(), 'medium') : get_template_directory_uri() . '/assets/images/placeholder.png'; ?>">
                                     <i class="bi bi-play-circle-fill me-2"></i>Listen Now
                                 </button>
-                                <a href="<?php the_permalink(); ?>" class="btn rounded-pill px-4" style="border:1px solid var(--glass-border); color:var(--text-primary);">View Details</a>
+                                <a href="<?php the_permalink(); ?>" class="btn rounded-pill px-4 btn-glass-outline"><i class="bi bi-info-circle me-2"></i>View Details</a>
                             </div>
                         </div>
                     </div>
