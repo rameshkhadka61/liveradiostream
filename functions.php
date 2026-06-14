@@ -306,7 +306,7 @@ use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 $myUpdateChecker = PucFactory::buildUpdateChecker(
 	'https://github.com/rameshkhadka61/liveradiostream/',
 	__FILE__,
-	'liveradiostream-theme'
+	'liveradiostream'
 );
 
 // Optional: If you're using a private repository, specify the access token like this:
