@@ -2,7 +2,7 @@
 Theme Name: LiveRadioStream
 Description: Custom theme for LiveRadioStream Website
 Author: Ramesh Khadka
-Version: 1.9.0
+Version: 1.9.1
 */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
@@ -1483,4 +1483,25 @@ html.is-leaving .transition-fade {
 .choices[data-type*="select-multiple"] .choices__button {
   border-left: 1px solid var(--glass-border) !important;
   margin-left: 5px;
+}
+/* ===== Standard Content Styling (for Pages) ===== */
+.entry-content h1, .entry-content h2, .entry-content h3, .entry-content h4, .entry-content h5, .entry-content h6 {
+  color: var(--text-primary);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+.entry-content ul, .entry-content ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+.entry-content li {
+  margin-bottom: 0.5rem;
+}
+.entry-content a {
+  color: var(--accent-cyan);
+  text-decoration: underline;
+}
+.entry-content a:hover {
+  color: #fff;
 }
