@@ -39,7 +39,14 @@ $term = get_queried_object();
                             <span class="badge rounded-pill px-3" style="background:rgba(6,182,212,.2); color:var(--accent-cyan);"><?php echo esc_html( ucfirst($term->taxonomy) ); ?></span>
                         </div>
                         <h1 class="display-5 fw-bold mb-2"><span id="hero-term-name"><?php echo esc_html( $term->name ); ?></span> Stations</h1>
-                        <p class="text-muted mb-3" id="hero-term-desc">Discover the hottest <span class="term-name-desc"><?php echo esc_html( strtolower($term->name) ); ?></span> radio stations streaming live from around the world, 24/7.</p>
+                        <?php 
+                        $term_desc = term_description( $term->term_id, $term->taxonomy );
+                        if ( ! empty( $term_desc ) ) : 
+                            echo '<div class="term-description text-muted mb-3" id="hero-term-desc">' . wp_kses_post( $term_desc ) . '</div>';
+                        else :
+                        ?>
+                            <p class="text-muted mb-3" id="hero-term-desc">Discover the hottest <span class="term-name-desc"><?php echo esc_html( strtolower($term->name) ); ?></span> radio stations streaming live from around the world, 24/7.</p>
+                        <?php endif; ?>
                         <div class="stats-bar">
                             <div class="stat-item">
                                 <div class="stat-number" id="hero-term-count"><?php echo number_format_i18n( $term->count ); ?></div>
@@ -55,6 +62,18 @@ $term = get_queried_object();
         <div class="row g-4">
             <!-- ===== LEFT CONTENT ===== -->
             <div class="col-lg-8">
+                <!-- Top Leaderboard Ad (Taxonomy) -->
+                <?php $top_ad = get_theme_mod( 'liveradio_ad_top', '' ); ?>
+                <?php if ( ! empty( $top_ad ) ) : ?>
+                    <div class="mb-4 text-center">
+                        <?php echo $top_ad; ?>
+                    </div>
+                <?php elseif ( current_user_can( 'manage_options' ) ) : ?>
+                    <div class="glass p-3 rounded-4 text-center mb-4" style="border:1px dashed rgba(255,255,255,.15);">
+                        <p class="text-muted small mb-0">Top Leaderboard Ad Placeholder (Add code in Customizer)</p>
+                    </div>
+                <?php endif; ?>
+
                 <!-- Filter Bar -->
                 <div class="filter-bar">
                     <form id="taxonomy-filter-form" class="row g-3 align-items-center">
@@ -122,7 +141,14 @@ $term = get_queried_object();
                                     <?php get_template_part( 'template-parts/content', 'station-card' ); ?>
                                 <?php endwhile; ?>
                             <?php else : ?>
-                                <div class="col-12"><p>No stations found.</p></div>
+                                <div class="col-12">
+                                    <div class="empty-state text-center py-5 glass rounded-4" style="border: 1px dashed rgba(148, 163, 184, 0.3);">
+                                        <i class="bi bi-broadcast fs-1 text-muted mb-3 d-block"></i>
+                                        <h3 class="h5 fw-bold">No Stations Found</h3>
+                                        <p class="text-muted">We couldn't find any stations matching your criteria in this category.</p>
+                                        <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="btn btn-gradient rounded-pill px-4 mt-2">Explore Other Stations</a>
+                                    </div>
+                                </div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -138,6 +164,13 @@ $term = get_queried_object();
                                     get_template_part( 'template-parts/content', 'station-list' );
                                 endwhile; 
                                 ?>
+                            <?php else : ?>
+                                <div class="empty-state text-center py-5 glass rounded-4" style="border: 1px dashed rgba(148, 163, 184, 0.3);">
+                                    <i class="bi bi-broadcast fs-1 text-muted mb-3 d-block"></i>
+                                    <h3 class="h5 fw-bold">No Stations Found</h3>
+                                    <p class="text-muted">We couldn't find any stations matching your criteria in this category.</p>
+                                    <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="btn btn-gradient rounded-pill px-4 mt-2">Explore Other Stations</a>
+                                </div>
                             <?php endif; ?>
                         </div>
                     </div>

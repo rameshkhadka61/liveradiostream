@@ -616,3 +616,42 @@ function liveradio_save_comment_rating( $comment_id, $comment_approved, $comment
         }
     }
 }
+
+/**
+ * Add JSON-LD Schema Markup for Taxonomy Pages
+ */
+function liveradio_taxonomy_schema_markup() {
+    if ( is_tax( 'genre' ) || is_tax( 'country' ) ) {
+        $term = get_queried_object();
+        $term_url = get_term_link( $term );
+        $site_url = home_url( '/' );
+        
+        $breadcrumb_schema = array(
+            '@context' => 'https://schema.org',
+            '@type'    => 'BreadcrumbList',
+            'itemListElement' => array(
+                array(
+                    '@type'    => 'ListItem',
+                    'position' => 1,
+                    'name'     => 'Home',
+                    'item'     => $site_url
+                ),
+                array(
+                    '@type'    => 'ListItem',
+                    'position' => 2,
+                    'name'     => $term->taxonomy == 'genre' ? 'Genres' : 'Countries'
+                ),
+                array(
+                    '@type'    => 'ListItem',
+                    'position' => 3,
+                    'name'     => $term->name,
+                    'item'     => $term_url
+                )
+            )
+        );
+
+        echo '<script type="application/ld+json">' . wp_json_encode( $breadcrumb_schema ) . '</script>' . "\n";
+    }
+}
+add_action( 'wp_head', 'liveradio_taxonomy_schema_markup' );
+
