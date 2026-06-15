@@ -323,6 +323,13 @@ get_header();
                         ?>
                         <li class="info-row">
                             <span class="text-muted fw-bold me-2" style="width:20px;"><?php echo $index; ?></span>
+                            <a href="<?php the_permalink(); ?>" class="me-2 text-decoration-none">
+                                <?php if ( has_post_thumbnail() ) : ?>
+                                    <?php the_post_thumbnail( 'thumbnail', array( 'class' => 'related-img', 'style' => 'width: 45px; height: 45px; padding: 4px;' ) ); ?>
+                                <?php else : ?>
+                                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png" class="related-img" style="width: 45px; height: 45px; padding: 4px;" alt="<?php the_title_attribute(); ?>">
+                                <?php endif; ?>
+                            </a>
                             <div class="flex-grow-1">
                                 <div class="fw-semibold small"><a href="<?php the_permalink(); ?>" class="text-decoration-none text-primary-custom"><?php the_title(); ?></a></div>
                                 <div class="text-muted" style="font-size:.75rem;"><?php echo esc_html( $trend_flag . $trend_list_k . ' listening' ); ?></div>
