@@ -82,7 +82,14 @@ function liveradio_filter_stations() {
                 get_template_part( 'template-parts/content', 'station-card' );
             }
         } else {
-            echo '<div class="col-12"><p>No stations found matching your criteria.</p></div>';
+            echo '<div class="col-12">
+                <div class="empty-state text-center py-5 glass rounded-4" style="border: 1px dashed rgba(148, 163, 184, 0.3);">
+                    <i class="bi bi-broadcast fs-1 text-muted mb-3 d-block"></i>
+                    <h3 class="h5 fw-bold">No Stations Found</h3>
+                    <p class="text-muted">We couldn\'t find any stations matching your criteria in this category.</p>
+                    <a href="' . esc_url( home_url( '/' ) ) . '" class="btn btn-gradient rounded-pill px-4 mt-2">Explore Other Stations</a>
+                </div>
+            </div>';
         }
         $grid_html = ob_get_clean();
 
@@ -95,7 +102,12 @@ function liveradio_filter_stations() {
                 get_template_part( 'template-parts/content', 'station-list' );
             }
         } else {
-            echo '<div class="col-12"><p>No stations found matching your criteria.</p></div>';
+            echo '<div class="empty-state text-center py-5 glass rounded-4" style="border: 1px dashed rgba(148, 163, 184, 0.3);">
+                <i class="bi bi-broadcast fs-1 text-muted mb-3 d-block"></i>
+                <h3 class="h5 fw-bold">No Stations Found</h3>
+                <p class="text-muted">We couldn\'t find any stations matching your criteria in this category.</p>
+                <a href="' . esc_url( home_url( '/' ) ) . '" class="btn btn-gradient rounded-pill px-4 mt-2">Explore Other Stations</a>
+            </div>';
         }
         $list_html = ob_get_clean();
 
