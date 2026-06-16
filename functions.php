@@ -51,8 +51,9 @@ function liveradio_scripts() {
     // Theme CSS
     wp_enqueue_style( 'liveradio-style', get_stylesheet_uri(), array(), wp_get_theme()->get( 'Version' ) );
 
-    // Swup JS
+    // Swup JS & Plugins
     wp_enqueue_script( 'swup-js', 'https://unpkg.com/swup@4', array(), '4.0.0', true );
+    wp_enqueue_script( 'swup-head-plugin-js', 'https://unpkg.com/@swup/head-plugin@2', array('swup-js'), '2.0.0', true );
 
     // Bootstrap JS
     wp_enqueue_script( 'bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js', array(), '5.3.2', true );
@@ -62,7 +63,7 @@ function liveradio_scripts() {
     wp_enqueue_script( 'choices-js', 'https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js', array(), '10.2.0', true );
 
     // Theme JS
-    wp_enqueue_script( 'liveradio-app', get_template_directory_uri() . '/assets/js/app.v2.js', array('swup-js', 'choices-js'), wp_get_theme()->get( 'Version' ), true );
+    wp_enqueue_script( 'liveradio-app', get_template_directory_uri() . '/assets/js/app.v2.js', array('swup-js', 'swup-head-plugin-js', 'choices-js'), wp_get_theme()->get( 'Version' ), true );
 
     // Pass ajax_url to script
     wp_localize_script( 'liveradio-app', 'liveradio_ajax', array(
@@ -261,36 +262,47 @@ function liveradio_get_station_rating( $post_id ) {
 }
 
 /**
- * Get user country from IP address
+ * Get user country from IP address (via Cookie set by frontend JS)
  */
 function liveradio_get_user_country_data() {
-    $ip = $_SERVER['REMOTE_ADDR'];
-    // If localhost, use empty string to let the API use the requester's IP
-    if ($ip === '127.0.0.1' || $ip === '::1' || strpos($ip, '192.168.') === 0 || strpos($ip, '10.') === 0) {
-        $ip = ''; 
+    if ( isset( $_COOKIE['lr_user_country'] ) && isset( $_COOKIE['lr_user_country_code'] ) ) {
+        return array(
+            'name' => sanitize_text_field( wp_unslash( $_COOKIE['lr_user_country'] ) ),
+            'code' => sanitize_text_field( wp_unslash( $_COOKIE['lr_user_country_code'] ) )
+        );
     }
+    return false;
+}
+
+/**
+ * Safe output for Customizer Ad slots
+ */
+function liveradio_safe_ad_output( $ad_code ) {
+    if ( empty( $ad_code ) ) return;
     
-    $transient_key = 'lr_user_country_' . md5($ip);
-    $country_data = get_transient($transient_key);
+    // Allow basic HTML tags and scripts for AdSense
+    $allowed_html = array(
+        'script' => array(
+            'async'       => true,
+            'src'         => true,
+            'type'        => true,
+            'crossorigin' => true,
+        ),
+        'ins' => array(
+            'class'                      => true,
+            'style'                      => true,
+            'data-ad-client'             => true,
+            'data-ad-slot'               => true,
+            'data-ad-format'             => true,
+            'data-full-width-responsive' => true,
+        ),
+        'div' => array('id' => true, 'class' => true, 'style' => true),
+        'span' => array('class' => true, 'style' => true),
+        'a' => array('href' => true, 'target' => true, 'class' => true, 'rel' => true),
+        'img' => array('src' => true, 'alt' => true, 'class' => true, 'width' => true, 'height' => true, 'style' => true),
+    );
     
-    if (false === $country_data) {
-        $response = wp_remote_get('http://ip-api.com/json/' . $ip . '?fields=country,countryCode');
-        if (is_wp_error($response)) {
-            return false;
-        }
-        $body = wp_remote_retrieve_body($response);
-        $data = json_decode($body);
-        if ($data && isset($data->country)) {
-            $country_data = array(
-                'name' => $data->country,
-                'code' => $data->countryCode
-            );
-            set_transient($transient_key, $country_data, 12 * HOUR_IN_SECONDS);
-        } else {
-            return false;
-        }
-    }
-    return $country_data;
+    echo wp_kses( $ad_code, $allowed_html );
 }
 
 /**

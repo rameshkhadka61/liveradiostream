@@ -164,7 +164,7 @@ get_header();
         <?php $top_ad = get_theme_mod( 'liveradio_ad_top', '' ); ?>
         <?php if ( ! empty( $top_ad ) ) : ?>
             <div class="container mb-4 text-center">
-                <?php echo $top_ad; ?>
+                <?php liveradio_safe_ad_output($top_ad); ?>
             </div>
         <?php elseif ( current_user_can( 'manage_options' ) ) : ?>
             <div class="container mb-4">
@@ -201,7 +201,7 @@ get_header();
                 <?php $inarticle_ad = get_theme_mod( 'liveradio_ad_inarticle', '' ); ?>
                 <?php if ( ! empty( $inarticle_ad ) ) : ?>
                     <div class="mb-4 text-center">
-                        <?php echo $inarticle_ad; ?>
+                        <?php liveradio_safe_ad_output($inarticle_ad); ?>
                     </div>
                 <?php elseif ( current_user_can( 'manage_options' ) ) : ?>
                     <div class="glass p-3 rounded-4 text-center mb-4" style="border:1px dashed rgba(255,255,255,.15);">
@@ -402,7 +402,7 @@ get_header();
                 <?php $sidebar_ad = get_theme_mod( 'liveradio_ad_sidebar', '' ); ?>
                 <?php if ( ! empty( $sidebar_ad ) ) : ?>
                     <div class="mb-4 text-center">
-                        <?php echo $sidebar_ad; ?>
+                        <?php liveradio_safe_ad_output($sidebar_ad); ?>
                     </div>
                 <?php elseif ( current_user_can( 'manage_options' ) ) : ?>
                     <div class="glass p-4 rounded-4 text-center mb-4" style="border:1px dashed rgba(255,255,255,.15);">

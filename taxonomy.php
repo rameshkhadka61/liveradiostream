@@ -66,7 +66,7 @@ $term = get_queried_object();
                 <?php $top_ad = get_theme_mod( 'liveradio_ad_top', '' ); ?>
                 <?php if ( ! empty( $top_ad ) ) : ?>
                     <div class="mb-4 text-center">
-                        <?php echo $top_ad; ?>
+                        <?php liveradio_safe_ad_output($top_ad); ?>
                     </div>
                 <?php elseif ( current_user_can( 'manage_options' ) ) : ?>
                     <div class="glass p-3 rounded-4 text-center mb-4" style="border:1px dashed rgba(255,255,255,.15);">

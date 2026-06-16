@@ -69,7 +69,7 @@ if ( false === $country_count ) {
         <?php $front_top_ad = get_theme_mod( 'liveradio_ad_front_top', '' ); ?>
         <?php if ( ! empty( $front_top_ad ) ) : ?>
             <div class="mb-5 text-center mt-4">
-                <?php echo $front_top_ad; ?>
+                <?php liveradio_safe_ad_output($front_top_ad); ?>
             </div>
         <?php elseif ( current_user_can( 'manage_options' ) ) : ?>
             <div class="mb-5 mt-4">
@@ -263,7 +263,7 @@ if ( false === $country_count ) {
         <?php $front_infeed_ad = get_theme_mod( 'liveradio_ad_front_infeed', '' ); ?>
         <?php if ( ! empty( $front_infeed_ad ) ) : ?>
             <div class="mb-5 text-center">
-                <?php echo $front_infeed_ad; ?>
+                <?php liveradio_safe_ad_output($front_infeed_ad); ?>
             </div>
         <?php elseif ( current_user_can( 'manage_options' ) ) : ?>
             <div class="mb-5">

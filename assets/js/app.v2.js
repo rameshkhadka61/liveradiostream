@@ -1,11 +1,22 @@
 // Initialize Swup
 let swup;
 if (typeof Swup !== 'undefined') {
-  swup = new Swup();
+  swup = new Swup({
+    plugins: [new SwupHeadPlugin()]
+  });
   
   // Update active nav link on page transition (navbar is outside #swup container)
   swup.hooks.on('page:view', () => {
     updateActiveNavLinks();
+    
+    // Re-initialize AdSense if available
+    if (typeof window.adsbygoogle !== 'undefined') {
+        document.querySelectorAll('.adsbygoogle').forEach(ad => {
+            if (!ad.hasAttribute('data-adsbygoogle-status')) {
+                window.adsbygoogle.push({});
+            }
+        });
+    }
   });
 }
 
@@ -46,6 +57,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Fetch user country for localized stations if cookie not set
+  if (document.cookie.indexOf('lr_user_country=') === -1) {
+    fetch('http://ip-api.com/json/?fields=country,countryCode')
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.country && data.countryCode) {
+          const expires = new Date(Date.now() + 12 * 60 * 60 * 1000).toUTCString();
+          document.cookie = `lr_user_country=${encodeURIComponent(data.country)}; expires=${expires}; path=/`;
+          document.cookie = `lr_user_country_code=${encodeURIComponent(data.countryCode)}; expires=${expires}; path=/`;
+        }
+      })
+      .catch(err => console.log('Error fetching user country:', err));
+  }
+
   // Theme Toggle Logic (Persistent)
   const themeToggleBtn = document.getElementById('theme-toggle');
   const themeIcon = document.getElementById('theme-icon');
