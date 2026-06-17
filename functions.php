@@ -667,3 +667,64 @@ function liveradio_taxonomy_schema_markup() {
 }
 add_action( 'wp_head', 'liveradio_taxonomy_schema_markup' );
 
+/**
+ * 1. The Proxy Handler
+ * This listens for the stream request and serves the audio without loading the rest of the WordPress theme.
+ */
+add_action('template_redirect', 'liveradiostream_handle_stream_proxy');
+function liveradiostream_handle_stream_proxy() {
+    // Check if our custom proxy parameter is in the URL
+    if ( isset( $_GET['stream_proxy_url'] ) ) {
+        // Decode the URL
+        $stream_url = urldecode($_GET['stream_proxy_url']);
+
+        // Security Validation: Ensure it's a valid URL and strictly HTTP
+        if ( !filter_var($stream_url, FILTER_VALIDATE_URL) || strpos($stream_url, 'http://') !== 0 ) {
+            status_header(400);
+            die("Invalid HTTP Stream URL.");
+        }
+
+        // Disable WordPress/PHP output buffering so the stream flows continuously
+        if (function_exists('apache_setenv')) {
+            apache_setenv('no-gzip', '1');
+        }
+        @ini_set('zlib.output_compression', 'Off');
+        @ini_set('output_buffering', 'Off');
+        @ini_set('implicit_flush', '1');
+        while (ob_get_level()) ob_end_clean();
+
+        // Set Headers
+        header('Content-Type: audio/mpeg');
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+
+        // Open the HTTP stream and pass it to the user over HTTPS
+        $handle = @fopen($stream_url, "rb");
+
+        if ($handle) {
+            while (!feof($handle) && connection_status() == 0) {
+                echo fread($handle, 8192);
+                flush();
+            }
+            fclose($handle);
+        } else {
+            status_header(502);
+            die("Could not connect to stream.");
+        }
+        
+        // CRITICAL: Stop WordPress from loading the rest of the page (header, footer, etc.)
+        exit; 
+    }
+}
+
+/**
+ * 2. The URL Converter Function
+ * Use this anywhere in your theme to automatically convert HTTP links to your proxy.
+ */
+function make_stream_secure($url) {
+    if (strpos($url, 'http://') === 0) {
+        // This generates a WordPress-friendly URL like: 
+        // https://yourwebsite.com/?stream_proxy_url=http...
+        return add_query_arg('stream_proxy_url', urlencode($url), home_url('/'));
+    }
+    return $url;
+}
