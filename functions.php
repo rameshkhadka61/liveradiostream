@@ -675,7 +675,7 @@ add_action('template_redirect', 'liveradiostream_handle_stream_proxy');
 function liveradiostream_handle_stream_proxy() {
     // Check if our custom proxy parameter is in the URL
     if ( isset( $_GET['stream_proxy_url'] ) ) {
-        // Decode the URL
+        // $_GET is already decoded, but we decode just in case of double-encoding
         $stream_url = urldecode($_GET['stream_proxy_url']);
 
         // Security Validation: Ensure it's a valid URL and strictly HTTP
@@ -697,21 +697,49 @@ function liveradiostream_handle_stream_proxy() {
         header('Content-Type: audio/mpeg');
         header('Cache-Control: no-cache, no-store, must-revalidate');
 
-        // Open the HTTP stream and pass it to the user over HTTPS
-        $handle = @fopen($stream_url, "rb");
-
-        if ($handle) {
-            while (!feof($handle) && connection_status() == 0) {
-                echo fread($handle, 8192);
+        // Prefer cURL if available (bypasses allow_url_fopen restrictions)
+        if ( function_exists('curl_init') ) {
+            $ch = curl_init($stream_url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+            curl_setopt($ch, CURLOPT_HEADER, false);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_WRITEFUNCTION, function($curl, $data) {
+                echo $data;
                 flush();
+                return strlen($data);
+            });
+            $success = curl_exec($ch);
+            curl_close($ch);
+            
+            if (!$success) {
+                status_header(502);
+                die("Stream Error: Your server's firewall is likely blocking outgoing connections to this port.");
             }
-            fclose($handle);
-        } else {
-            status_header(502);
-            die("Could not connect to stream.");
+        } 
+        // Fallback to fopen
+        else {
+            $context = stream_context_create(array(
+                'http' => array(
+                    'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\r\n"
+                )
+            ));
+            $handle = @fopen($stream_url, "rb", false, $context);
+
+            if ($handle) {
+                while (!feof($handle) && connection_status() == 0) {
+                    echo fread($handle, 8192);
+                    flush();
+                }
+                fclose($handle);
+            } else {
+                status_header(502);
+                die("Stream Error: Could not connect to stream. allow_url_fopen might be disabled or port blocked.");
+            }
         }
         
-        // CRITICAL: Stop WordPress from loading the rest of the page (header, footer, etc.)
+        // CRITICAL: Stop WordPress from loading the rest of the page
         exit; 
     }
 }
