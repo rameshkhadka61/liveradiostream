@@ -131,9 +131,6 @@ function liveradio_submit_station() {
 
     $name = isset( $_POST['stationName'] ) ? sanitize_text_field( $_POST['stationName'] ) : '';
     $stream_url = isset( $_POST['streamUrl'] ) ? esc_url_raw( $_POST['streamUrl'] ) : '';
-    if ( function_exists('make_stream_secure') ) {
-        $stream_url = make_stream_secure( $stream_url );
-    }
     $website_url = isset( $_POST['websiteUrl'] ) ? esc_url_raw( $_POST['websiteUrl'] ) : '';
     $logo_url = isset( $_POST['logoUrl'] ) ? esc_url_raw( $_POST['logoUrl'] ) : '';
     

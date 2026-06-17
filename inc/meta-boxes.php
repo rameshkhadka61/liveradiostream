@@ -44,14 +44,9 @@ function liveradio_save_meta_box_data( $post_id ) {
     if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
     if ( ! current_user_can( 'edit_post', $post_id ) ) return;
 
-    if ( isset( $_POST['streaming_url'] ) ) {
-        $stream_url = esc_url_raw( $_POST['streaming_url'] );
-        if ( function_exists('make_stream_secure') ) {
-            $stream_url = make_stream_secure( $stream_url );
-        }
-        update_post_meta( $post_id, 'streaming_url', $stream_url );
-        update_post_meta( $post_id, '_stream_url', $stream_url );
-    }
+    if ( isset( $_POST['streaming_url'] ) ) update_post_meta( $post_id, 'streaming_url', esc_url_raw( $_POST['streaming_url'] ) );
+    // Fallback/legacy
+    if ( isset( $_POST['streaming_url'] ) ) update_post_meta( $post_id, '_stream_url', esc_url_raw( $_POST['streaming_url'] ) );
     
     if ( isset( $_POST['website_url'] ) ) update_post_meta( $post_id, '_website_url', esc_url_raw( $_POST['website_url'] ) );
     if ( isset( $_POST['bitrate'] ) ) update_post_meta( $post_id, '_bitrate', sanitize_text_field( $_POST['bitrate'] ) );
