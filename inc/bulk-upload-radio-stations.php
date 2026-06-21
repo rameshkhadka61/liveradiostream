@@ -229,44 +229,66 @@ function liveradio_bulk_upload_station() {
     $set_taxonomies( $country_str, 'country' );
     $set_taxonomies( $language_str, 'language' );
 
-    // Handle Local Featured Image Upload
+    // Handle Local Featured Image Upload or Remote URL
     $image_msg = '';
     if ( ! empty( $featured_image_path ) ) {
         // Remove quotes and whitespace
         $featured_image_path = trim($featured_image_path, " \t\n\r\0\x0B\"'");
-        // Convert backslashes to forward slashes (works better in PHP on Windows)
-        $featured_image_path = str_replace('\\', '/', $featured_image_path);
         
-        clearstatcache();
-        if ( file_exists( $featured_image_path ) ) {
-            $file_content = file_get_contents( $featured_image_path );
-            if ( $file_content !== false ) {
-                $filename = basename( $featured_image_path );
-                $upload_file = wp_upload_bits( $filename, null, $file_content );
-                
-                if ( ! $upload_file['error'] ) {
-                    $wp_filetype = wp_check_filetype( $filename, null );
-                    $attachment = array(
-                        'post_mime_type' => $wp_filetype['type'],
-                        'post_title'     => preg_replace( '/\.[^.]+$/', '', $filename ),
-                        'post_content'   => '',
-                        'post_status'    => 'inherit'
-                    );
-                    
-                    $attach_id = wp_insert_attachment( $attachment, $upload_file['file'], $post_id );
-                    require_once( ABSPATH . 'wp-admin/includes/image.php' );
-                    $attach_data = wp_generate_attachment_metadata( $attach_id, $upload_file['file'] );
-                    wp_update_attachment_metadata( $attach_id, $attach_data );
-                    set_post_thumbnail( $post_id, $attach_id );
-                    $image_msg = ' & Image attached.';
-                } else {
-                    $image_msg = ' & Image upload failed: ' . $upload_file['error'];
-                }
+        $is_url = filter_var($featured_image_path, FILTER_VALIDATE_URL) !== false;
+        
+        if ( ! $is_url ) {
+            // Convert backslashes to forward slashes for local Windows paths
+            $featured_image_path = str_replace('\\', '/', $featured_image_path);
+            clearstatcache();
+        }
+
+        $file_content = false;
+        $filename = basename( parse_url($featured_image_path, PHP_URL_PATH) );
+
+        if ( $is_url ) {
+            $response = wp_remote_get( $featured_image_path, array('timeout' => 15) );
+            if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
+                $file_content = wp_remote_retrieve_body( $response );
             } else {
-                $image_msg = ' & Could not read image file.';
+                $image_msg = ' & Could not download image from URL.';
             }
         } else {
-            $image_msg = ' & Image file not found at path: ' . esc_html($featured_image_path);
+            if ( file_exists( $featured_image_path ) ) {
+                $file_content = file_get_contents( $featured_image_path );
+                if ( $file_content === false ) {
+                    $image_msg = ' & Could not read local image file.';
+                }
+            } else {
+                $image_msg = ' & Image file not found at path: ' . esc_html($featured_image_path);
+            }
+        }
+
+        if ( $file_content !== false ) {
+            $upload_file = wp_upload_bits( $filename, null, $file_content );
+            
+            if ( ! $upload_file['error'] ) {
+                $wp_filetype = wp_check_filetype( $filename, null );
+                if ( ! $wp_filetype['type'] ) {
+                    $wp_filetype['type'] = 'image/jpeg'; // Fallback
+                }
+                
+                $attachment = array(
+                    'post_mime_type' => $wp_filetype['type'],
+                    'post_title'     => preg_replace( '/\.[^.]+$/', '', $filename ),
+                    'post_content'   => '',
+                    'post_status'    => 'inherit'
+                );
+                
+                $attach_id = wp_insert_attachment( $attachment, $upload_file['file'], $post_id );
+                require_once( ABSPATH . 'wp-admin/includes/image.php' );
+                $attach_data = wp_generate_attachment_metadata( $attach_id, $upload_file['file'] );
+                wp_update_attachment_metadata( $attach_id, $attach_data );
+                set_post_thumbnail( $post_id, $attach_id );
+                $image_msg = ' & Image attached.';
+            } else {
+                $image_msg = ' & Image upload failed: ' . $upload_file['error'];
+            }
         }
     }
 
