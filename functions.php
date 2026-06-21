@@ -116,6 +116,7 @@ require get_template_directory() . '/inc/cpt-radio-station.php';
 require get_template_directory() . '/inc/meta-boxes.php';
 require get_template_directory() . '/inc/ajax-handlers.php';
 require get_template_directory() . '/inc/customizer.php';
+require get_template_directory() . '/inc/bulk-upload-radio-stations.php';
 
 /**
  * Save comment rating
