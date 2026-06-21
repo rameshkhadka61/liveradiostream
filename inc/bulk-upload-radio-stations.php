@@ -232,9 +232,12 @@ function liveradio_bulk_upload_station() {
     // Handle Local Featured Image Upload
     $image_msg = '';
     if ( ! empty( $featured_image_path ) ) {
-        // Remove quotes if present
-        $featured_image_path = trim($featured_image_path, '"\' ');
+        // Remove quotes and whitespace
+        $featured_image_path = trim($featured_image_path, " \t\n\r\0\x0B\"'");
+        // Convert backslashes to forward slashes (works better in PHP on Windows)
+        $featured_image_path = str_replace('\\', '/', $featured_image_path);
         
+        clearstatcache();
         if ( file_exists( $featured_image_path ) ) {
             $file_content = file_get_contents( $featured_image_path );
             if ( $file_content !== false ) {
@@ -263,7 +266,7 @@ function liveradio_bulk_upload_station() {
                 $image_msg = ' & Could not read image file.';
             }
         } else {
-            $image_msg = ' & Image file not found at path: ' . htmlspecialchars($featured_image_path);
+            $image_msg = ' & Image file not found at path: ' . esc_html($featured_image_path);
         }
     }
 
