@@ -177,57 +177,66 @@ function liveradio_bulk_upload_station() {
     
     $featured_image_path = $get_col( ['Featured Image', 'Image', 'Logo'], $station_data );
 
-    // Create Post
-    $post_id = wp_insert_post( array(
-        'post_title'   => wp_strip_all_tags( $name ),
-        'post_content' => wp_kses_post( $description ),
-        'post_status'  => 'publish',
-        'post_type'    => 'radio_station',
-    ) );
+    $clean_name = wp_strip_all_tags( $name );
+    $existing_post = get_page_by_title( $clean_name, OBJECT, 'radio_station' );
+    $is_existing = false;
 
-    if ( is_wp_error( $post_id ) ) {
-        wp_send_json_error( 'Failed to create post: ' . $post_id->get_error_message() );
-    }
+    if ( $existing_post ) {
+        $post_id = $existing_post->ID;
+        $is_existing = true;
+    } else {
+        // Create Post
+        $post_id = wp_insert_post( array(
+            'post_title'   => $clean_name,
+            'post_content' => wp_kses_post( $description ),
+            'post_status'  => 'publish',
+            'post_type'    => 'radio_station',
+        ) );
 
-    // Update Meta
-    if ( ! empty( $streaming_url ) ) {
-        update_post_meta( $post_id, 'streaming_url', esc_url_raw( $streaming_url ) );
-        update_post_meta( $post_id, '_stream_url', esc_url_raw( $streaming_url ) );
-    }
-    if ( ! empty( $website_url ) ) update_post_meta( $post_id, '_website_url', esc_url_raw( $website_url ) );
-    if ( ! empty( $bitrate ) ) update_post_meta( $post_id, '_bitrate', sanitize_text_field( $bitrate ) );
-    if ( ! empty( $frequency ) ) update_post_meta( $post_id, '_frequency', sanitize_text_field( $frequency ) );
-    if ( ! empty( $owner ) ) update_post_meta( $post_id, '_owner', sanitize_text_field( $owner ) );
+        if ( is_wp_error( $post_id ) ) {
+            wp_send_json_error( 'Failed to create post: ' . $post_id->get_error_message() );
+        }
 
-    // Handle Taxonomies
-    $set_taxonomies = function( $term_str, $taxonomy ) use ( $post_id ) {
-        if ( empty( $term_str ) ) return;
-        
-        $terms = array_map( 'trim', explode( ',', $term_str ) );
-        $term_ids = array();
-        
-        foreach ( $terms as $term_name ) {
-            if ( empty( $term_name ) ) continue;
+        // Update Meta
+        if ( ! empty( $streaming_url ) ) {
+            update_post_meta( $post_id, 'streaming_url', esc_url_raw( $streaming_url ) );
+            update_post_meta( $post_id, '_stream_url', esc_url_raw( $streaming_url ) );
+        }
+        if ( ! empty( $website_url ) ) update_post_meta( $post_id, '_website_url', esc_url_raw( $website_url ) );
+        if ( ! empty( $bitrate ) ) update_post_meta( $post_id, '_bitrate', sanitize_text_field( $bitrate ) );
+        if ( ! empty( $frequency ) ) update_post_meta( $post_id, '_frequency', sanitize_text_field( $frequency ) );
+        if ( ! empty( $owner ) ) update_post_meta( $post_id, '_owner', sanitize_text_field( $owner ) );
+
+        // Handle Taxonomies
+        $set_taxonomies = function( $term_str, $taxonomy ) use ( $post_id ) {
+            if ( empty( $term_str ) ) return;
             
-            $term = term_exists( $term_name, $taxonomy );
+            $terms = array_map( 'trim', explode( ',', $term_str ) );
+            $term_ids = array();
             
-            if ( ! $term ) {
-                $term = wp_insert_term( $term_name, $taxonomy );
+            foreach ( $terms as $term_name ) {
+                if ( empty( $term_name ) ) continue;
+                
+                $term = term_exists( $term_name, $taxonomy );
+                
+                if ( ! $term ) {
+                    $term = wp_insert_term( $term_name, $taxonomy );
+                }
+                
+                if ( ! is_wp_error( $term ) && isset( $term['term_id'] ) ) {
+                    $term_ids[] = (int) $term['term_id'];
+                }
             }
             
-            if ( ! is_wp_error( $term ) && isset( $term['term_id'] ) ) {
-                $term_ids[] = (int) $term['term_id'];
+            if ( ! empty( $term_ids ) ) {
+                wp_set_object_terms( $post_id, $term_ids, $taxonomy );
             }
-        }
-        
-        if ( ! empty( $term_ids ) ) {
-            wp_set_object_terms( $post_id, $term_ids, $taxonomy );
-        }
-    };
+        };
 
-    $set_taxonomies( $genre_str, 'genre' );
-    $set_taxonomies( $country_str, 'country' );
-    $set_taxonomies( $language_str, 'language' );
+        $set_taxonomies( $genre_str, 'genre' );
+        $set_taxonomies( $country_str, 'country' );
+        $set_taxonomies( $language_str, 'language' );
+    }
 
     // Handle Local Featured Image Upload or Remote URL
     $image_msg = '';
@@ -292,6 +301,7 @@ function liveradio_bulk_upload_station() {
         }
     }
 
-    wp_send_json_success( array( 'message' => 'Imported ' . esc_html( $name ) . $image_msg, 'post_id' => $post_id ) );
+    $action_text = $is_existing ? 'Updated image for ' : 'Imported ';
+    wp_send_json_success( array( 'message' => $action_text . esc_html( $name ) . $image_msg, 'post_id' => $post_id ) );
 }
 add_action( 'wp_ajax_liveradio_bulk_upload_station', 'liveradio_bulk_upload_station' );
