@@ -261,3 +261,45 @@ function liveradio_ajax_report_station() {
         wp_send_json_error( array( 'message' => 'Invalid station' ) );
     }
 }
+
+/**
+ * Get Favorites via AJAX
+ */
+add_action( 'wp_ajax_liveradio_get_favorites', 'liveradio_ajax_get_favorites' );
+add_action( 'wp_ajax_nopriv_liveradio_get_favorites', 'liveradio_ajax_get_favorites' );
+function liveradio_ajax_get_favorites() {
+    check_ajax_referer( 'liveradio_nonce', 'nonce' );
+
+    $station_ids = isset( $_POST['station_ids'] ) ? $_POST['station_ids'] : array();
+    
+    // Validate inputs
+    $station_ids = is_array( $station_ids ) ? array_map( 'intval', $station_ids ) : array();
+    $station_ids = array_filter( $station_ids );
+
+    if ( empty( $station_ids ) ) {
+        wp_send_json_success( array( 'html' => '' ) );
+    }
+
+    $args = array(
+        'post_type'      => 'radio_station',
+        'post__in'       => $station_ids,
+        'posts_per_page' => -1,
+        'orderby'        => 'post__in', // Maintain the order of the array
+        'post_status'    => 'publish',
+    );
+
+    $query = new WP_Query( $args );
+
+    ob_start();
+    if ( $query->have_posts() ) {
+        while ( $query->have_posts() ) {
+            $query->the_post();
+            get_template_part( 'template-parts/content', 'station-card' );
+        }
+    }
+    $html = ob_get_clean();
+    wp_reset_postdata();
+
+    wp_send_json_success( array( 'html' => $html ) );
+}
+

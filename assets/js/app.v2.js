@@ -687,6 +687,50 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
     }
+    // Load Favorites on Favorites Page
+    const favoritesContainer = document.getElementById('favorites-container');
+    if (favoritesContainer) {
+      const favoritesGrid = document.getElementById('favorites-grid');
+      const favoritesLoading = document.getElementById('favorites-loading');
+      const favoritesEmpty = document.getElementById('favorites-empty');
+      const currentFavorites = JSON.parse(localStorage.getItem('liveradio_favorites') || '[]');
+
+      if (currentFavorites.length === 0) {
+        if (favoritesLoading) favoritesLoading.classList.add('d-none');
+        if (favoritesEmpty) favoritesEmpty.classList.remove('d-none');
+      } else {
+        const formData = new FormData();
+        formData.append('action', 'liveradio_get_favorites');
+        formData.append('nonce', liveradio_ajax.nonce);
+        currentFavorites.forEach(id => formData.append('station_ids[]', id));
+
+        fetch(liveradio_ajax.ajax_url, {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (favoritesLoading) favoritesLoading.classList.add('d-none');
+          if (data.success && data.data.html) {
+            if (favoritesGrid) {
+              favoritesGrid.innerHTML = data.data.html;
+              favoritesGrid.classList.remove('d-none');
+            }
+          } else {
+            if (favoritesEmpty) favoritesEmpty.classList.remove('d-none');
+          }
+        })
+        .catch(err => {
+          console.error('Error fetching favorites', err);
+          if (favoritesLoading) favoritesLoading.classList.add('d-none');
+          if (favoritesEmpty) {
+            favoritesEmpty.classList.remove('d-none');
+            favoritesEmpty.querySelector('h3').innerText = 'Error loading favorites';
+            favoritesEmpty.querySelector('p').innerText = 'Please try again later.';
+          }
+        });
+      }
+    }
   }
 
   // Run initApp on first load
