@@ -12,7 +12,7 @@ $term = get_queried_object();
         <nav aria-label="breadcrumb" class="mt-3">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="text-muted text-decoration-none">Home</a></li>
-                <li class="breadcrumb-item"><a href="#" class="text-muted text-decoration-none"><?php echo esc_html( $term->taxonomy == 'genre' ? 'Genres' : 'Countries' ); ?></a></li>
+                <li class="breadcrumb-item"><span class="text-muted"><?php echo esc_html( $term->taxonomy == 'genre' ? 'Genres' : 'Countries' ); ?></span></li>
                 <li class="breadcrumb-item active" style="color:var(--accent-cyan);" aria-current="page"><?php echo esc_html( $term->name ); ?></li>
             </ol>
         </nav>

@@ -14,9 +14,14 @@
                             class="bi bi-broadcast"></i> <?php bloginfo( 'name' ); ?></a>
                     <p class="text-muted mb-4"><?php bloginfo( 'description' ); ?></p>
                     <div class="d-flex gap-3">
-                        <a href="#" class="btn-icon"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="btn-icon"><i class="bi bi-twitter-x"></i></a>
-                        <a href="#" class="btn-icon"><i class="bi bi-instagram"></i></a>
+                        <?php
+                        $fb = get_theme_mod('facebook_url', 'https://facebook.com/');
+                        $tw = get_theme_mod('twitter_url', 'https://twitter.com/');
+                        $ig = get_theme_mod('instagram_url', 'https://instagram.com/');
+                        ?>
+                        <?php if ( $fb ) : ?><a href="<?php echo esc_url($fb); ?>" class="btn-icon" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="bi bi-facebook"></i></a><?php endif; ?>
+                        <?php if ( $tw ) : ?><a href="<?php echo esc_url($tw); ?>" class="btn-icon" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a><?php endif; ?>
+                        <?php if ( $ig ) : ?><a href="<?php echo esc_url($ig); ?>" class="btn-icon" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="bi bi-instagram"></i></a><?php endif; ?>
                     </div>
                 </div>
                 <div class="col-6 col-lg-2 offset-lg-1">

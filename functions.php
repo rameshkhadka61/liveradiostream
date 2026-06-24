@@ -49,7 +49,8 @@ function liveradio_scripts() {
     // Bootstrap Icons
     wp_enqueue_style( 'bootstrap-icons', 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css', array(), '1.11.1' );
     // Theme CSS
-    wp_enqueue_style( 'liveradio-style', get_stylesheet_uri(), array(), wp_get_theme()->get( 'Version' ) );
+    $theme_css = file_exists( get_template_directory() . '/style.min.css' ) ? get_template_directory_uri() . '/style.min.css' : get_stylesheet_uri();
+    wp_enqueue_style( 'liveradio-style', $theme_css, array(), wp_get_theme()->get( 'Version' ) );
 
     // Swup JS & Plugins
     wp_enqueue_script( 'swup-js', 'https://unpkg.com/swup@4', array(), '4.0.0', true );
@@ -667,4 +668,20 @@ function liveradio_taxonomy_schema_markup() {
     }
 }
 add_action( 'wp_head', 'liveradio_taxonomy_schema_markup' );
+
+/**
+ * Security: Remove WordPress version and Theme version strings
+ */
+// Remove WordPress generator meta tag
+remove_action( 'wp_head', 'wp_generator' );
+
+// Remove version query strings from scripts and styles
+function liveradio_remove_version_strings( $src ) {
+    if ( strpos( $src, 'ver=' ) ) {
+        $src = remove_query_arg( 'ver', $src );
+    }
+    return $src;
+}
+add_filter( 'style_loader_src', 'liveradio_remove_version_strings', 9999 );
+add_filter( 'script_loader_src', 'liveradio_remove_version_strings', 9999 );
 
