@@ -9,6 +9,7 @@
 <head>
     <meta charset="<?php bloginfo( 'charset' ); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <?php
     $meta_desc = get_bloginfo( 'description', 'display' );
     if ( is_singular() ) {
@@ -94,6 +95,7 @@
     <?php if ( $og_image ) : ?>
     <meta name="twitter:image" content="<?php echo esc_url( $og_image ); ?>">
     <?php endif; ?>
+
 
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <meta name="google-adsense-anchor-ad-position" content="top">
