@@ -47,7 +47,7 @@ function liveradio_scripts() {
     // Bootstrap CSS
     wp_enqueue_style( 'bootstrap-css', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css', array(), '5.3.2' );
     // Bootstrap Icons
-    wp_enqueue_style( 'bootstrap-icons', 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css', array(), '1.11.1' );
+    wp_enqueue_style( 'bootstrap-icons', 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.min.css', array(), '1.11.1' );
     // Theme CSS
     $theme_css = file_exists( get_template_directory() . '/style.min.css' ) ? get_template_directory_uri() . '/style.min.css' : get_stylesheet_uri();
     wp_enqueue_style( 'liveradio-style', $theme_css, array(), wp_get_theme()->get( 'Version' ) );
@@ -430,7 +430,7 @@ function liveradio_custom_login_logo_url() {
 add_action( 'login_enqueue_scripts', 'liveradio_custom_login_scripts' );
 function liveradio_custom_login_scripts() {
     wp_enqueue_style( 'google-font-inter', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap', false );
-    wp_enqueue_style( 'bootstrap-icons', 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css', array(), '1.11.1' );
+    wp_enqueue_style( 'bootstrap-icons', 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.min.css', array(), '1.11.1' );
     ?>
     <style type="text/css">
         body.login {
