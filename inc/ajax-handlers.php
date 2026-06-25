@@ -317,8 +317,14 @@ function liveradio_ajax_random_station() {
         'orderby'        => 'rand',
         'post_status'    => 'publish',
         'meta_query'     => array(
+            'relation' => 'OR',
             array(
                 'key'     => '_stream_url',
+                'value'   => '',
+                'compare' => '!=',
+            ),
+            array(
+                'key'     => 'streaming_url',
                 'value'   => '',
                 'compare' => '!=',
             ),

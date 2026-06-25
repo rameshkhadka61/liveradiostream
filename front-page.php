@@ -131,7 +131,20 @@ if ( false === $total_plays ) {
             $featured_args = array(
                 'post_type'      => 'radio_station',
                 'posts_per_page' => 1,
-                'orderby'        => 'rand'
+                'orderby'        => 'rand',
+                'meta_query'     => array(
+                    'relation' => 'OR',
+                    array(
+                        'key'     => '_stream_url',
+                        'value'   => '',
+                        'compare' => '!='
+                    ),
+                    array(
+                        'key'     => 'streaming_url',
+                        'value'   => '',
+                        'compare' => '!='
+                    )
+                )
             );
             $featured_query = new WP_Query( $featured_args );
 
