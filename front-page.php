@@ -173,12 +173,10 @@ if ( false === $country_count ) {
                                 <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-2">
                                     <span class="tag-pill" style="font-size:0.7rem; padding:0.2rem 0.6rem;"><?php echo esc_html($feat_genre); ?></span>
                                     <?php 
-                                        $base_listeners = get_post_meta( get_the_ID(), '_listeners', true );
-                                        if ( ! $base_listeners ) $base_listeners = rand( 5000, 15000 );
-                                        $fluctuation = rand(-5, 5) / 1000;
-                                        $listeners = max( 1, round($base_listeners * (1 + $fluctuation)) + rand(-5, 5) );
+                                        $play_count = (int) get_post_meta( get_the_ID(), '_play_count', true );
+                                        $listeners = $play_count;
                                     ?>
-                                    <span class="text-muted small"><i class="bi bi-headphones me-1"></i><?php echo number_format_i18n($listeners); ?> listening</span>
+                                    <span class="text-muted small"><i class="bi bi-play-circle me-1"></i><?php echo $listeners > 0 ? number_format_i18n($listeners) . ' plays' : 'New'; ?></span>
                                 </div>
                                 
                                 <h3 class="display-6 fw-bold mb-3 station-name"><?php the_title(); ?></h3>
@@ -212,7 +210,7 @@ if ( false === $country_count ) {
         $query_args = array(
             'post_type'      => 'radio_station',
             'posts_per_page' => 10,
-            'meta_key'       => '_listeners',
+            'meta_key'       => '_play_count',
             'orderby'        => 'meta_value_num',
             'order'          => 'DESC',
         );

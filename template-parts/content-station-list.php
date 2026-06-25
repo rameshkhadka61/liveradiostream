@@ -4,9 +4,8 @@
  */
 
 $stream_url = get_post_meta( get_the_ID(), '_stream_url', true );
-$listeners = get_post_meta( get_the_ID(), '_listeners', true );
-if ( ! $listeners ) $listeners = rand( 1000, 15000 ); // fallback mock data
-$listeners_k = round($listeners / 1000, 1) . 'k';
+$play_count = (int) get_post_meta( get_the_ID(), '_play_count', true );
+$listeners_k = $play_count >= 1000 ? round($play_count / 1000, 1) . 'k' : ($play_count > 0 ? $play_count : 'New');
 
 $genres = get_the_terms( get_the_ID(), 'genre' );
 $genre_name = $genres && ! is_wp_error( $genres ) ? $genres[0]->name : 'Uncategorized';

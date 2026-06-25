@@ -62,7 +62,7 @@ function liveradio_filter_stations() {
         $args['order'] = 'DESC';
     } else {
         // popular
-        $args['meta_key'] = '_listeners';
+        $args['meta_key'] = '_play_count';
         $args['orderby'] = 'meta_value_num';
         $args['order'] = 'DESC';
     }

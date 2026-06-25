@@ -4,17 +4,11 @@
  */
 
 $stream_url = get_post_meta( get_the_ID(), '_stream_url', true );
-$base_listeners = get_post_meta( get_the_ID(), '_listeners', true );
-if ( ! $base_listeners ) $base_listeners = rand( 1000, 15000 ); // fallback mock data
-
-// Add random fluctuation to simulate live listeners changing realistically on refresh
-$fluctuation = rand(-5, 5) / 1000;
-$listeners = max( 1, round($base_listeners * (1 + $fluctuation)) + rand(-5, 5) );
-
-if ($listeners >= 1000) {
-    $listeners_k = round($listeners / 1000, 1) . 'k';
+$play_count = (int) get_post_meta( get_the_ID(), '_play_count', true );
+if ( $play_count >= 1000 ) {
+    $listeners_k = round($play_count / 1000, 1) . 'k';
 } else {
-    $listeners_k = $listeners;
+    $listeners_k = $play_count > 0 ? $play_count : 'New';
 }
 
 $genres = get_the_terms( get_the_ID(), 'genre' );
@@ -53,7 +47,7 @@ $is_trending = rand(1, 10) > 8;
             <h3 class="h6 mb-1 text-truncate station-name">
                 <a href="<?php the_permalink(); ?>" class="text-decoration-none text-primary-custom"><?php the_title(); ?></a>
             </h3>
-            <p class="text-muted small mb-0"><?php echo esc_html( $flag . $genre_name . ' • ' . $listeners_k . ' listening' ); ?></p>
+            <p class="text-muted small mb-0"><?php echo esc_html( $flag . $genre_name ); ?> <span class="text-muted">• <i class="bi bi-play-circle"></i> <?php echo esc_html($listeners_k); ?></span></p>
         </div>
     </div>
 </div>

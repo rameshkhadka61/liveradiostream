@@ -68,13 +68,12 @@
     <div class="custom-card p-4 mb-4">
         <h2 class="h5 fw-bold mb-3"><i class="bi bi-fire me-2" style="color:#f59e0b;"></i>Trending Stations</h2>
         <?php
-        $trending = new WP_Query( array( 'post_type' => 'radio_station', 'posts_per_page' => 3 ) );
+        $trending = new WP_Query( array( 'post_type' => 'radio_station', 'posts_per_page' => 3, 'meta_key' => '_play_count', 'orderby' => 'meta_value_num', 'order' => 'DESC' ) );
         $k = 0;
         while ( $trending->have_posts() ) : $trending->the_post();
             $k++;
-            $listeners = get_post_meta( get_the_ID(), '_listeners', true );
-            if ( ! $listeners ) $listeners = rand( 1000, 15000 );
-            $listeners_k = round($listeners / 1000, 1) . 'k';
+            $play_count = (int) get_post_meta( get_the_ID(), '_play_count', true );
+            $listeners_k = $play_count >= 1000 ? round($play_count / 1000, 1) . 'k' : ($play_count > 0 ? $play_count : 'New');
             $mb = ($k < 3) ? 'mb-3' : '';
             
             // Randomly assign trending badge

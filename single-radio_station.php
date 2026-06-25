@@ -15,12 +15,8 @@ get_header();
     $bitrate = get_post_meta( get_the_ID(), '_bitrate', true );
     $frequency = get_post_meta( get_the_ID(), '_frequency', true );
     $owner = get_post_meta( get_the_ID(), '_owner', true );
-    $base_listeners = get_post_meta( get_the_ID(), '_listeners', true );
-    if ( ! $base_listeners ) $base_listeners = rand( 1000, 15000 );
-    
-    // Add random fluctuation to simulate live listeners changing realistically on refresh
-    $fluctuation = rand(-5, 5) / 1000;
-    $listeners = max( 1, round($base_listeners * (1 + $fluctuation)) + rand(-5, 5) );
+    $play_count = (int) get_post_meta( get_the_ID(), '_play_count', true );
+    $listeners = $play_count > 0 ? $play_count : 0;
     
     $genres = get_the_terms( get_the_ID(), 'genre' );
     $countries = get_the_terms( get_the_ID(), 'country' );
@@ -293,24 +289,19 @@ get_header();
                             'post_type'      => 'radio_station',
                             'posts_per_page' => 3,
                             'orderby'        => 'meta_value_num',
-                            'meta_key'       => '_listeners',
+                            'meta_key'       => '_play_count',
                             'order'          => 'DESC'
                         );
                         $trending_query = new WP_Query( $trending_args );
                         $index = 1;
                         if ( $trending_query->have_posts() ) :
                             while ( $trending_query->have_posts() ) : $trending_query->the_post();
-                                $base_trend_list = get_post_meta( get_the_ID(), '_listeners', true );
-                                if ( ! $base_trend_list ) $base_trend_list = rand( 1000, 15000 );
+                                $trend_count = (int) get_post_meta( get_the_ID(), '_play_count', true );
                                 
-                                // Add random fluctuation to simulate live listeners changing realistically on refresh
-                                $trend_fluctuation = rand(-5, 5) / 1000;
-                                $trend_list = max( 1, round($base_trend_list * (1 + $trend_fluctuation)) + rand(-5, 5) );
-                                
-                                if ($trend_list >= 1000) {
-                                    $trend_list_k = round($trend_list / 1000, 1) . 'k';
+                                if ($trend_count >= 1000) {
+                                    $trend_list_k = round($trend_count / 1000, 1) . 'k';
                                 } else {
-                                    $trend_list_k = $trend_list;
+                                    $trend_list_k = $trend_count > 0 ? $trend_count : 'New';
                                 }
                                 
                                 $trend_countries = get_the_terms( get_the_ID(), 'country' );
