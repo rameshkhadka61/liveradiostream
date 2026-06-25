@@ -313,7 +313,7 @@ function liveradio_ajax_random_station() {
 
     $args = array(
         'post_type'      => 'radio_station',
-        'posts_per_page' => 10,
+        'posts_per_page' => 20,
         'orderby'        => 'rand',
         'post_status'    => 'publish',
         'meta_query'     => array(

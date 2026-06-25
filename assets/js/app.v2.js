@@ -131,6 +131,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const details = document.getElementById('player-station-details');
       if (liveDot) liveDot.style.backgroundColor = '#ef4444'; // error color
       if (details) details.innerText = 'Stream Error';
+
+      if (audioPlayer.dataset.isSurpriseMe === 'true') {
+        audioPlayer.dataset.isSurpriseMe = 'false';
+        const sBtn = document.getElementById('btn-surprise-me');
+        if (sBtn) {
+          if (details) details.innerText = 'Retrying stream...';
+          setTimeout(() => sBtn.click(), 600);
+          return;
+        }
+      }
       togglePlayState(false, true);
     });
   }
@@ -890,6 +900,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   if (audio) {
                     audio.src = streamData.data.stream_url;
                     audio.dataset.stationId = station_id;
+                    audio.dataset.isSurpriseMe = 'true';
                     audio.play().catch(() => {});
                     addToRecentlyPlayed(station_id);
                     incrementPlayCount(station_id);

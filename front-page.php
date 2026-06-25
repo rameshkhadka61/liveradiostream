@@ -130,7 +130,7 @@ if ( false === $total_plays ) {
             <?php
             $featured_args = array(
                 'post_type'      => 'radio_station',
-                'posts_per_page' => 10,
+                'posts_per_page' => 20,
                 'orderby'        => 'rand',
                 'meta_query'     => array(
                     'relation' => 'OR',

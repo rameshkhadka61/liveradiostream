@@ -750,31 +750,41 @@ add_action( 'save_post_page', 'liveradio_save_about_meta_box' );
 function liveradio_is_stream_working( $url ) {
     if ( empty( $url ) ) return false;
 
-    $cache_key = 'lr_st_val_' . md5( $url );
+    $cache_key = 'lr_st_val_v3_' . md5( $url );
     $cached = get_transient( $cache_key );
     if ( false !== $cached ) {
         return ( $cached === 'ok' );
     }
 
-    $response = wp_remote_get( $url, array(
-        'timeout'     => 2,
-        'redirection' => 2,
-        'httpversion' => '1.1',
-        'headers'     => array(
-            'User-Agent'   => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) LiveRadioStream/1.0',
-            'Icy-MetaData' => '1',
-            'Connection'   => 'close',
-            'Range'        => 'bytes=0-512'
-        ),
-    ) );
-
-    if ( is_wp_error( $response ) ) {
-        set_transient( $cache_key, 'bad', 15 * MINUTE_IN_SECONDS );
-        return false;
+    if ( ! function_exists( 'curl_init' ) ) {
+        return true;
     }
 
-    $code = wp_remote_retrieve_response_code( $response );
+    $ch = curl_init( $url );
+    curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+    curl_setopt( $ch, CURLOPT_MAXREDIRS, 3 );
+    curl_setopt( $ch, CURLOPT_TIMEOUT, 3 );
+    curl_setopt( $ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) LiveRadioStream/1.0' );
+    curl_setopt( $ch, CURLOPT_HTTPHEADER, array('Icy-MetaData: 1') );
+    curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
+    curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, false );
+    
+    // Abort download immediately once headers & first byte arrive
+    curl_setopt( $ch, CURLOPT_WRITEFUNCTION, function( $handle, $data ) {
+        return 0; // Aborts cURL with write error right after headers arrive
+    });
+
+    @curl_exec( $ch );
+    $code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+    $content_type = strtolower( (string) curl_getinfo( $ch, CURLINFO_CONTENT_TYPE ) );
+    curl_close( $ch );
+
     if ( $code >= 200 && $code < 400 ) {
+        // Reject HTML error pages or offline landing pages
+        if ( strpos( $content_type, 'text/html' ) !== false || strpos( $content_type, 'text/plain' ) !== false ) {
+            set_transient( $cache_key, 'bad', 15 * MINUTE_IN_SECONDS );
+            return false;
+        }
         set_transient( $cache_key, 'ok', 4 * HOUR_IN_SECONDS );
         return true;
     }
