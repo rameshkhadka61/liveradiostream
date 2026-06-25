@@ -16,6 +16,13 @@ if ( false === $country_count ) {
     $country_count = wp_count_terms( array( 'taxonomy' => 'country', 'hide_empty' => true ) );
     set_transient('lr_country_count_v6', $country_count, 12 * HOUR_IN_SECONDS);
 }
+
+$total_plays = get_transient('lr_total_plays_v6');
+if ( false === $total_plays ) {
+    global $wpdb;
+    $total_plays = (int) $wpdb->get_var("SELECT SUM(meta_value) FROM {$wpdb->postmeta} WHERE meta_key = '_play_count'");
+    set_transient('lr_total_plays_v6', $total_plays, 1 * HOUR_IN_SECONDS);
+}
 ?>
 
     <!-- Hero Section -->
@@ -474,8 +481,8 @@ if ( false === $country_count ) {
 
                         <div class="position-absolute glass rounded-3 px-3 py-2 text-center shadow"
                             style="top:20px; right:-16px; min-width:110px; border:1px solid rgba(59,130,246,.25);">
-                            <div class="fw-bold" style="font-size:1.3rem; color:var(--accent-blue);">48k+</div>
-                            <div style="font-size:.72rem; color:var(--text-secondary);">Live Listeners</div>
+                            <div class="fw-bold" style="font-size:1.3rem; color:var(--accent-blue);"><?php echo number_format_i18n($total_plays); ?>+</div>
+                            <div style="font-size:.72rem; color:var(--text-secondary);">Times Listened</div>
                         </div>
                     </div>
                 </div>
@@ -496,8 +503,8 @@ if ( false === $country_count ) {
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="custom-card p-3 text-center">
-                        <div class="fw-bold fs-4 text-gradient">48k+</div>
-                        <div class="text-muted small">Live Listeners</div>
+                        <div class="fw-bold fs-4 text-gradient"><?php echo number_format_i18n($total_plays); ?>+</div>
+                        <div class="text-muted small">Times Listened</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
