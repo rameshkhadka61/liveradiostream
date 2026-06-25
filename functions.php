@@ -793,4 +793,17 @@ function liveradio_is_stream_working( $url ) {
     return false;
 }
 
+/**
+ * Remove default WordPress Posts menu from admin dashboard and admin bar
+ */
+function liveradio_remove_default_posts_menu() {
+    remove_menu_page( 'edit.php' );
+}
+add_action( 'admin_menu', 'liveradio_remove_default_posts_menu' );
+
+function liveradio_remove_default_post_admin_bar( $wp_admin_bar ) {
+    $wp_admin_bar->remove_node( 'new-post' );
+}
+add_action( 'admin_bar_menu', 'liveradio_remove_default_post_admin_bar', 999 );
+
 
