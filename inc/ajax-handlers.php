@@ -197,7 +197,10 @@ function liveradio_ajax_get_stream_url() {
         wp_send_json_error( 'Invalid station ID' );
     }
 
-    $stream_url = liveradio_get_playable_stream_url( $station_id );
+    $stream_url = get_post_meta( $station_id, 'streaming_url', true );
+    if ( ! $stream_url ) {
+        $stream_url = get_post_meta( $station_id, '_stream_url', true );
+    }
 
     if ( $stream_url ) {
         wp_send_json_success( array( 'stream_url' => esc_url_raw( $stream_url ) ) );
