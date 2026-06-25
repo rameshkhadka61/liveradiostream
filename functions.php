@@ -318,16 +318,14 @@ add_filter( 'pre_option_require_name_email', '__return_false' );
 require get_template_directory() . '/inc/plugin-update-checker/plugin-update-checker.php';
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
-$myUpdateChecker = PucFactory::buildUpdateChecker(
+$themeUpdateChecker = PucFactory::buildUpdateChecker(
 	'https://github.com/rameshkhadka61/liveradiostream/',
 	__FILE__,
 	'liveradiostream'
 );
 
-// Optional: If you're using a private repository, specify the access token like this:
-// $myUpdateChecker->setAuthentication('your-token-here');
-
-$myUpdateChecker->setBranch('main');
+// $themeUpdateChecker->setAuthentication('your-token-here');
+$themeUpdateChecker->setBranch('main');
 
 /**
  * Clear caching transients when a station is saved or deleted
