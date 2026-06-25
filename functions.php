@@ -793,4 +793,81 @@ function liveradio_is_stream_working( $url ) {
     return false;
 }
 
+/**
+ * Get a browser-playable HTTPS stream URL (upgraded or proxied if needed)
+ */
+function liveradio_get_playable_stream_url( $station_id ) {
+    $url = get_post_meta( $station_id, 'streaming_url', true );
+    if ( ! $url ) {
+        $url = get_post_meta( $station_id, '_stream_url', true );
+    }
+    if ( empty( $url ) ) return '';
+
+    // If already HTTPS, return as is
+    if ( preg_match( '/^https:/i', $url ) ) {
+        return $url;
+    }
+
+    // If HTTP, check if we can upgrade protocol to HTTPS
+    if ( preg_match( '/^http:/i', $url ) ) {
+        $https_url = preg_replace( '/^http:/i', 'https:', $url );
+        if ( liveradio_is_stream_working( $https_url ) ) {
+            return $https_url;
+        }
+
+        // If live site is served over HTTPS and remote stream refuses HTTPS, use proxy relay
+        if ( is_ssl() || ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ) || ( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) ) {
+            return home_url( '/?liveradio_proxy=' . $station_id );
+        }
+    }
+
+    return $url;
+}
+
+/**
+ * Stream Relay Handler for strict HTTP streams on HTTPS websites
+ */
+function liveradio_handle_stream_proxy() {
+    if ( isset( $_GET['liveradio_proxy'] ) && ! empty( $_GET['liveradio_proxy'] ) ) {
+        $station_id = intval( $_GET['liveradio_proxy'] );
+        if ( ! $station_id ) exit;
+
+        $stream_url = get_post_meta( $station_id, 'streaming_url', true );
+        if ( ! $stream_url ) {
+            $stream_url = get_post_meta( $station_id, '_stream_url', true );
+        }
+        if ( empty( $stream_url ) ) exit;
+
+        if ( session_status() === PHP_SESSION_ACTIVE ) {
+            @session_write_close();
+        }
+
+        while ( ob_get_level() > 0 ) {
+            @ob_end_clean();
+        }
+
+        header( 'Content-Type: audio/mpeg' );
+        header( 'Cache-Control: no-cache' );
+        header( 'Access-Control-Allow-Origin: *' );
+
+        if ( function_exists( 'curl_init' ) ) {
+            $ch = curl_init( $stream_url );
+            curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
+            curl_setopt( $ch, CURLOPT_TIMEOUT, 0 );
+            curl_setopt( $ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) LiveRadioStream/1.0' );
+            curl_setopt( $ch, CURLOPT_WRITEFUNCTION, function( $curl, $data ) {
+                echo $data;
+                @flush();
+                return strlen( $data );
+            });
+            @curl_exec( $ch );
+            curl_close( $ch );
+        } else {
+            @readfile( $stream_url );
+        }
+        exit;
+    }
+}
+add_action( 'template_redirect', 'liveradio_handle_stream_proxy', 1 );
+
 
