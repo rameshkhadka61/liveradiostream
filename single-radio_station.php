@@ -103,7 +103,7 @@ get_header();
                                     <div class="bar"></div>
                                     <div class="bar"></div>
                                 </div>
-                                <span class="text-muted small"><?php echo number_format_i18n( $listeners ); ?> listening now</span>
+                                <span class="text-muted small"><?php echo number_format_i18n( $listeners ); ?> Times Listened</span>
                             </div>
                             <div class="rating-stars">
                                 <?php
@@ -323,7 +323,7 @@ get_header();
                             </a>
                             <div class="flex-grow-1">
                                 <div class="fw-semibold small"><a href="<?php the_permalink(); ?>" class="text-decoration-none text-primary-custom"><?php the_title(); ?></a></div>
-                                <div class="text-muted" style="font-size:.75rem;"><?php echo esc_html( $trend_flag . $trend_list_k . ' listening' ); ?></div>
+                                <div class="text-muted" style="font-size:.75rem;"><?php echo esc_html( $trend_flag . $trend_list_k . ' Times Listened' ); ?></div>
                             </div>
                             <?php echo $icon; ?>
                         </li>

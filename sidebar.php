@@ -98,7 +98,7 @@
             <?php endif; ?>
             <div>
                 <div class="small fw-semibold text-primary-custom"><?php the_title(); ?></div>
-                <div class="text-muted" style="font-size:.75rem;"><?php echo $flag . $listeners_k; ?> listening</div>
+                <div class="text-muted" style="font-size:.75rem;"><?php echo $flag . $listeners_k; ?> Times Listened</div>
             </div>
             <span class="ms-auto badge" style="background:<?php echo $b['bg']; ?>; color:<?php echo $b['color']; ?>; font-size:.7rem;"><?php echo $b['text']; ?></span>
         </a>

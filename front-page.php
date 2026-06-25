@@ -487,7 +487,7 @@ if ( false === $country_count ) {
                         <div class="position-absolute glass rounded-3 px-3 py-2 text-center shadow"
                             style="top:20px; right:-16px; min-width:110px; border:1px solid rgba(59,130,246,.25);">
                             <div class="fw-bold" style="font-size:1.3rem; color:var(--accent-blue);">48k+</div>
-                            <div style="font-size:.72rem; color:var(--text-secondary);">Listening Now</div>
+                            <div style="font-size:.72rem; color:var(--text-secondary);">Live Listeners</div>
                         </div>
                     </div>
                 </div>
@@ -496,7 +496,7 @@ if ( false === $country_count ) {
             <div class="row g-3 mt-4">
                 <div class="col-6 col-md-3">
                     <div class="custom-card p-3 text-center">
-                        <div class="fw-bold fs-4 text-gradient"><?php echo number_format_i18n($station_count); ?></div>
+                        <div class="fw-bold fs-4 text-gradient"><?php echo number_format_i18n($station_count); ?>+</div>
                         <div class="text-muted small">Radio Stations</div>
                     </div>
                 </div>
@@ -508,7 +508,7 @@ if ( false === $country_count ) {
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="custom-card p-3 text-center">
-                        <div class="fw-bold fs-4 text-gradient">48k</div>
+                        <div class="fw-bold fs-4 text-gradient">48k+</div>
                         <div class="text-muted small">Live Listeners</div>
                     </div>
                 </div>
