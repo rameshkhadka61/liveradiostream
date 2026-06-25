@@ -15,9 +15,9 @@
                     <p class="text-muted mb-4"><?php bloginfo( 'description' ); ?></p>
                     <div class="d-flex gap-3">
                         <?php
-                        $fb = get_theme_mod('facebook_url', 'https://facebook.com/');
-                        $tw = get_theme_mod('twitter_url', 'https://twitter.com/');
-                        $ig = get_theme_mod('instagram_url', 'https://instagram.com/');
+                        $fb = get_theme_mod('facebook_url', '');
+                        $tw = get_theme_mod('twitter_url', '');
+                        $ig = get_theme_mod('instagram_url', '');
                         ?>
                         <?php if ( $fb ) : ?><a href="<?php echo esc_url($fb); ?>" class="btn-icon" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="bi bi-facebook"></i></a><?php endif; ?>
                         <?php if ( $tw ) : ?><a href="<?php echo esc_url($tw); ?>" class="btn-icon" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a><?php endif; ?>
