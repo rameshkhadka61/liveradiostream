@@ -683,3 +683,65 @@ function liveradio_remove_version_strings( $src ) {
 add_filter( 'style_loader_src', 'liveradio_remove_version_strings', 9999 );
 add_filter( 'script_loader_src', 'liveradio_remove_version_strings', 9999 );
 
+/**
+ * Register Custom Meta Box for About Us Page Template
+ */
+function liveradio_about_meta_box() {
+    global $post;
+    if ( ! $post ) return;
+    $template = get_post_meta( $post->ID, '_wp_page_template', true );
+    if ( $template === 'page-about.php' ) {
+        add_meta_box(
+            'liveradio_about_meta',
+            'About Page Dynamic Sections (Mission & Why Us)',
+            'liveradio_render_about_meta_box',
+            'page',
+            'normal',
+            'high'
+        );
+    }
+}
+add_action( 'add_meta_boxes', 'liveradio_about_meta_box' );
+
+function liveradio_render_about_meta_box( $post ) {
+    wp_nonce_field( 'liveradio_about_meta_nonce_action', 'liveradio_about_meta_nonce' );
+    $mission_title = get_post_meta( $post->ID, 'mission_title', true ) ?: 'Our Mission';
+    $mission       = get_post_meta( $post->ID, 'mission', true );
+    $why_title     = get_post_meta( $post->ID, 'why_us_title', true ) ?: 'Why Us?';
+    $why           = get_post_meta( $post->ID, 'why_us', true );
+    ?>
+    <p>Configure the dynamic grid boxes that appear below your main page content.</p>
+    <table class="form-table">
+        <tr>
+            <th><label for="mission_title">Card 1 Title</label></th>
+            <td><input type="text" name="mission_title" id="mission_title" value="<?php echo esc_attr( $mission_title ); ?>" class="regular-text"></td>
+        </tr>
+        <tr>
+            <th><label for="mission">Card 1 Content</label></th>
+            <td><textarea name="mission" id="mission" rows="4" class="large-text"><?php echo esc_textarea( $mission ); ?></textarea></td>
+        </tr>
+        <tr>
+            <th><label for="why_us_title">Card 2 Title</label></th>
+            <td><input type="text" name="why_us_title" id="why_us_title" value="<?php echo esc_attr( $why_title ); ?>" class="regular-text"></td>
+        </tr>
+        <tr>
+            <th><label for="why_us">Card 2 Content</label></th>
+            <td><textarea name="why_us" id="why_us" rows="4" class="large-text"><?php echo esc_textarea( $why ); ?></textarea></td>
+        </tr>
+    </table>
+    <?php
+}
+
+function liveradio_save_about_meta_box( $post_id ) {
+    if ( ! isset( $_POST['liveradio_about_meta_nonce'] ) || ! wp_verify_nonce( $_POST['liveradio_about_meta_nonce'], 'liveradio_about_meta_nonce_action' ) ) return;
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+    if ( ! current_user_can( 'edit_page', $post_id ) ) return;
+
+    if ( isset( $_POST['mission_title'] ) ) update_post_meta( $post_id, 'mission_title', sanitize_text_field( $_POST['mission_title'] ) );
+    if ( isset( $_POST['mission'] ) )       update_post_meta( $post_id, 'mission', wp_kses_post( $_POST['mission'] ) );
+    if ( isset( $_POST['why_us_title'] ) )  update_post_meta( $post_id, 'why_us_title', sanitize_text_field( $_POST['why_us_title'] ) );
+    if ( isset( $_POST['why_us'] ) )        update_post_meta( $post_id, 'why_us', wp_kses_post( $_POST['why_us'] ) );
+}
+add_action( 'save_post_page', 'liveradio_save_about_meta_box' );
+
+
