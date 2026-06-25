@@ -18,7 +18,7 @@ get_header(); ?>
     <main class="container pb-5 mt-4">
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <div class="custom-card p-4 p-md-5" style="border-top: 3px solid #06b6d4;">
+                <div class="custom-card p-4 p-md-5 shadow-glow" style="border-top: 3px solid #06b6d4;">
                     
                     <div class="mb-4 text-muted text-center" style="font-size: 1.05rem;">
                         <?php
