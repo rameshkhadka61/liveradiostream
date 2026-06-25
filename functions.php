@@ -744,4 +744,43 @@ function liveradio_save_about_meta_box( $post_id ) {
 }
 add_action( 'save_post_page', 'liveradio_save_about_meta_box' );
 
+/**
+ * Check if a radio stream URL is live and playing audio
+ */
+function liveradio_is_stream_working( $url ) {
+    if ( empty( $url ) ) return false;
+
+    $cache_key = 'lr_st_val_' . md5( $url );
+    $cached = get_transient( $cache_key );
+    if ( false !== $cached ) {
+        return ( $cached === 'ok' );
+    }
+
+    $response = wp_remote_get( $url, array(
+        'timeout'     => 2,
+        'redirection' => 2,
+        'httpversion' => '1.1',
+        'headers'     => array(
+            'User-Agent'   => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) LiveRadioStream/1.0',
+            'Icy-MetaData' => '1',
+            'Connection'   => 'close',
+            'Range'        => 'bytes=0-512'
+        ),
+    ) );
+
+    if ( is_wp_error( $response ) ) {
+        set_transient( $cache_key, 'bad', 15 * MINUTE_IN_SECONDS );
+        return false;
+    }
+
+    $code = wp_remote_retrieve_response_code( $response );
+    if ( $code >= 200 && $code < 400 ) {
+        set_transient( $cache_key, 'ok', 4 * HOUR_IN_SECONDS );
+        return true;
+    }
+
+    set_transient( $cache_key, 'bad', 15 * MINUTE_IN_SECONDS );
+    return false;
+}
+
 

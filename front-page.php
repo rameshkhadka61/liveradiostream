@@ -130,7 +130,7 @@ if ( false === $total_plays ) {
             <?php
             $featured_args = array(
                 'post_type'      => 'radio_station',
-                'posts_per_page' => 1,
+                'posts_per_page' => 10,
                 'orderby'        => 'rand',
                 'meta_query'     => array(
                     'relation' => 'OR',
@@ -146,12 +146,30 @@ if ( false === $total_plays ) {
                     )
                 )
             );
-            $featured_query = new WP_Query( $featured_args );
+            $raw_spotlight_query = new WP_Query( $featured_args );
+            $spotlight_post = null;
 
-            if ( $featured_query->have_posts() ) :
-                while ( $featured_query->have_posts() ) : $featured_query->the_post();
-                    $feat_genres = get_the_terms( get_the_ID(), 'genre' );
-                    $feat_genre = $feat_genres && ! is_wp_error( $feat_genres ) ? $feat_genres[0]->name : 'Music';
+            if ( $raw_spotlight_query->have_posts() ) {
+                foreach ( $raw_spotlight_query->posts as $candidate_post ) {
+                    $s_url = get_post_meta( $candidate_post->ID, 'streaming_url', true );
+                    if ( ! $s_url ) $s_url = get_post_meta( $candidate_post->ID, '_stream_url', true );
+                    if ( liveradio_is_stream_working( $s_url ) ) {
+                        $spotlight_post = $candidate_post;
+                        break;
+                    }
+                }
+            }
+
+            if ( ! $spotlight_post && ! empty( $raw_spotlight_query->posts ) ) {
+                $spotlight_post = $raw_spotlight_query->posts[0];
+            }
+
+            if ( $spotlight_post ) :
+                global $post;
+                $post = $spotlight_post;
+                setup_postdata( $post );
+                $feat_genres = get_the_terms( get_the_ID(), 'genre' );
+                $feat_genre = $feat_genres && ! is_wp_error( $feat_genres ) ? $feat_genres[0]->name : 'Music';
             ?>
             <div class="custom-card p-0 overflow-hidden position-relative spotlight-card station-hero text-center text-md-start" style="margin-top:0; border:1px solid var(--glass-border);">
                 <!-- Blurred background image like single page -->
@@ -205,7 +223,6 @@ if ( false === $total_plays ) {
                 </div>
             </div>
             <?php
-                endwhile;
                 wp_reset_postdata();
             endif;
             ?>

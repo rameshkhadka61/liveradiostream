@@ -313,7 +313,7 @@ function liveradio_ajax_random_station() {
 
     $args = array(
         'post_type'      => 'radio_station',
-        'posts_per_page' => 1,
+        'posts_per_page' => 10,
         'orderby'        => 'rand',
         'post_status'    => 'publish',
         'meta_query'     => array(
@@ -332,14 +332,25 @@ function liveradio_ajax_random_station() {
     );
 
     $query = new WP_Query( $args );
+    $valid_post = null;
 
     if ( $query->have_posts() ) {
-        $query->the_post();
-        $station_id   = get_the_ID();
-        $station_name = get_the_title();
-        $station_url  = get_permalink();
+        foreach ( $query->posts as $candidate ) {
+            $s_url = get_post_meta( $candidate->ID, 'streaming_url', true );
+            if ( ! $s_url ) $s_url = get_post_meta( $candidate->ID, '_stream_url', true );
+            if ( liveradio_is_stream_working( $s_url ) ) {
+                $valid_post = $candidate;
+                break;
+            }
+        }
+        if ( ! $valid_post && ! empty( $query->posts ) ) $valid_post = $query->posts[0];
+    }
+
+    if ( $valid_post ) {
+        $station_id   = $valid_post->ID;
+        $station_name = get_the_title( $station_id );
+        $station_url  = get_permalink( $station_id );
         $img          = get_the_post_thumbnail_url( $station_id, 'medium' );
-        wp_reset_postdata();
         wp_send_json_success( array(
             'station_id'   => $station_id,
             'station_name' => $station_name,
@@ -347,7 +358,7 @@ function liveradio_ajax_random_station() {
             'img'          => $img ?: '',
         ) );
     } else {
-        wp_send_json_error( array( 'message' => 'No stations found' ) );
+        wp_send_json_error( array( 'message' => 'No working stations found' ) );
     }
 }
 
