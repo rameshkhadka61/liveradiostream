@@ -742,4 +742,175 @@ document.addEventListener('DOMContentLoaded', () => {
       initApp();
     });
   }
+
+  // ============================================================
+  // RECENTLY PLAYED: Track played stations in localStorage
+  // ============================================================
+  const RECENTLY_PLAYED_KEY = 'liveradio_recently_played';
+  const MAX_RECENTLY_PLAYED = 5;
+
+  function addToRecentlyPlayed(stationId) {
+    if (!stationId) return;
+    let history = JSON.parse(localStorage.getItem(RECENTLY_PLAYED_KEY) || '[]');
+    // Remove if already exists to re-insert at front
+    history = history.filter(id => id !== stationId);
+    history.unshift(stationId);
+    if (history.length > MAX_RECENTLY_PLAYED) history = history.slice(0, MAX_RECENTLY_PLAYED);
+    localStorage.setItem(RECENTLY_PLAYED_KEY, JSON.stringify(history));
+  }
+
+  function incrementPlayCount(stationId) {
+    if (!stationId || typeof liveradio_ajax === 'undefined') return;
+    const formData = new FormData();
+    formData.append('action', 'liveradio_increment_play');
+    formData.append('station_id', stationId);
+    formData.append('nonce', liveradio_ajax.nonce);
+    fetch(liveradio_ajax.ajax_url, { method: 'POST', body: formData }).catch(() => {});
+  }
+
+  // Hook into the existing play button click to track history + increment count
+  const originalBodyClick = document.body.onclick;
+  document.body.addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn-play-trigger');
+    if (btn) {
+      const stationId = btn.getAttribute('data-station-id');
+      if (stationId) {
+        addToRecentlyPlayed(stationId);
+        incrementPlayCount(stationId);
+      }
+    }
+  });
+
+  // ============================================================
+  // CONTINUE LISTENING: Load recently played on homepage
+  // ============================================================
+  function loadRecentlyPlayed() {
+    const section = document.getElementById('continue-listening-section');
+    const container = document.getElementById('recently-played-container');
+    if (!section || !container) return;
+
+    const history = JSON.parse(localStorage.getItem(RECENTLY_PLAYED_KEY) || '[]');
+    if (history.length === 0) {
+      section.classList.add('d-none');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('action', 'liveradio_get_recently_played');
+    formData.append('nonce', liveradio_ajax.nonce);
+    history.forEach(id => formData.append('station_ids[]', id));
+
+    fetch(liveradio_ajax.ajax_url, { method: 'POST', body: formData })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && data.data.html) {
+          container.innerHTML = data.data.html;
+          section.classList.remove('d-none');
+          // Animate section in
+          section.style.opacity = '0';
+          section.style.transform = 'translateY(20px)';
+          requestAnimationFrame(() => {
+            section.style.transition = 'opacity .4s ease, transform .4s ease';
+            section.style.opacity = '1';
+            section.style.transform = 'translateY(0)';
+          });
+        }
+      }).catch(() => {});
+  }
+
+  // Clear recently played history
+  const clearHistoryBtn = document.getElementById('btn-clear-history');
+  if (clearHistoryBtn) {
+    clearHistoryBtn.addEventListener('click', () => {
+      localStorage.removeItem(RECENTLY_PLAYED_KEY);
+      const section = document.getElementById('continue-listening-section');
+      if (section) {
+        section.style.transition = 'opacity .3s ease';
+        section.style.opacity = '0';
+        setTimeout(() => section.classList.add('d-none'), 300);
+      }
+    });
+  }
+
+  loadRecentlyPlayed();
+
+  if (swup) {
+    swup.hooks.on('page:view', () => { loadRecentlyPlayed(); });
+  }
+
+  // ============================================================
+  // SURPRISE ME: Random station button
+  // ============================================================
+  const surpriseBtn = document.getElementById('btn-surprise-me');
+  if (surpriseBtn) {
+    surpriseBtn.addEventListener('click', () => {
+      const content = document.getElementById('surprise-btn-content');
+      const loading = document.getElementById('surprise-btn-loading');
+
+      content.classList.add('d-none');
+      loading.classList.remove('d-none');
+      surpriseBtn.disabled = true;
+
+      const formData = new FormData();
+      formData.append('action', 'liveradio_random_station');
+      formData.append('nonce', liveradio_ajax.nonce);
+
+      fetch(liveradio_ajax.ajax_url, { method: 'POST', body: formData })
+        .then(r => r.json())
+        .then(data => {
+          content.classList.remove('d-none');
+          loading.classList.add('d-none');
+          surpriseBtn.disabled = false;
+
+          if (data.success && data.data.station_id) {
+            const { station_id, station_name, img } = data.data;
+
+            // Update player UI
+            const playerName = document.getElementById('player-station-name');
+            const playerThumb = document.getElementById('player-thumbnail');
+            const stickyPlayer = document.getElementById('sticky-player');
+            const playerDetails = document.getElementById('player-station-details');
+
+            if (playerName) playerName.innerText = station_name;
+            if (playerThumb && img) playerThumb.src = img;
+            if (stickyPlayer) stickyPlayer.classList.add('show');
+            if (playerDetails) playerDetails.innerText = 'Connecting...';
+
+            // Fetch stream URL and play
+            const streamForm = new FormData();
+            streamForm.append('action', 'liveradio_get_stream_url');
+            streamForm.append('station_id', station_id);
+            streamForm.append('nonce', liveradio_ajax.nonce);
+
+            fetch(liveradio_ajax.ajax_url, { method: 'POST', body: streamForm })
+              .then(r => r.json())
+              .then(streamData => {
+                if (streamData.success && streamData.data.stream_url) {
+                  const audio = document.getElementById('global-audio-player');
+                  if (audio) {
+                    audio.src = streamData.data.stream_url;
+                    audio.dataset.stationId = station_id;
+                    audio.play().catch(() => {});
+                    addToRecentlyPlayed(station_id);
+                    incrementPlayCount(station_id);
+
+                    // Flash the button green briefly
+                    surpriseBtn.style.borderColor = '#10b981';
+                    surpriseBtn.style.color = '#10b981';
+                    setTimeout(() => {
+                      surpriseBtn.style.borderColor = '';
+                      surpriseBtn.style.color = '';
+                    }, 1500);
+                  }
+                }
+              });
+          }
+        })
+        .catch(() => {
+          content.classList.remove('d-none');
+          loading.classList.add('d-none');
+          surpriseBtn.disabled = false;
+        });
+    });
+  }
 });

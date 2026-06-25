@@ -47,6 +47,14 @@ if ( false === $country_count ) {
                 </div>
             </div>
 
+            <!-- Surprise Me Button -->
+            <div class="mt-3">
+                <button id="btn-surprise-me" class="btn btn-glass-outline rounded-pill px-4 py-2" style="border: 1px solid rgba(6,182,212,0.4); color: var(--accent-cyan); backdrop-filter: blur(8px);">
+                    <span id="surprise-btn-content"><i class="bi bi-shuffle me-2"></i>Surprise Me! <span class="badge rounded-pill ms-1" style="background:rgba(6,182,212,.2); color:var(--accent-cyan); font-size:.7rem;">Random Station</span></span>
+                    <span id="surprise-btn-loading" class="d-none"><span class="spinner-border spinner-border-sm me-2"></span>Finding station...</span>
+                </button>
+            </div>
+
             <div class="d-flex flex-wrap justify-content-center gap-2">
                 <?php
                 $trending_countries = get_transient( 'lr_trending_countries_v6' );
@@ -256,6 +264,27 @@ if ( false === $country_count ) {
                     echo '<p>No stations found.</p>';
                 endif;
                 ?>
+            </div>
+        </section>
+
+        <!-- Continue Listening Section (Populated from localStorage via JS) -->
+        <section class="mb-5 pb-3 d-none" id="continue-listening-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="equalizer" style="height:18px; display:inline-flex;">
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                    </div>
+                    <h2 class="h3 fw-bold mb-0">Continue Listening</h2>
+                </div>
+                <button id="btn-clear-history" class="btn btn-sm" style="color:var(--text-secondary); font-size:.78rem;">
+                    <i class="bi bi-trash3 me-1"></i>Clear
+                </button>
+            </div>
+            <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4" id="recently-played-container">
+                <!-- Populated via JS -->
             </div>
         </section>
 

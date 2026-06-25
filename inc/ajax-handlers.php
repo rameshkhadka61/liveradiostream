@@ -303,3 +303,101 @@ function liveradio_ajax_get_favorites() {
     wp_send_json_success( array( 'html' => $html ) );
 }
 
+/**
+ * Get a Random Station via AJAX
+ */
+add_action( 'wp_ajax_liveradio_random_station', 'liveradio_ajax_random_station' );
+add_action( 'wp_ajax_nopriv_liveradio_random_station', 'liveradio_ajax_random_station' );
+function liveradio_ajax_random_station() {
+    check_ajax_referer( 'liveradio_nonce', 'nonce' );
+
+    $args = array(
+        'post_type'      => 'radio_station',
+        'posts_per_page' => 1,
+        'orderby'        => 'rand',
+        'post_status'    => 'publish',
+        'meta_query'     => array(
+            array(
+                'key'     => '_stream_url',
+                'value'   => '',
+                'compare' => '!=',
+            ),
+        ),
+    );
+
+    $query = new WP_Query( $args );
+
+    if ( $query->have_posts() ) {
+        $query->the_post();
+        $station_id   = get_the_ID();
+        $station_name = get_the_title();
+        $station_url  = get_permalink();
+        $img          = get_the_post_thumbnail_url( $station_id, 'medium' );
+        wp_reset_postdata();
+        wp_send_json_success( array(
+            'station_id'   => $station_id,
+            'station_name' => $station_name,
+            'station_url'  => $station_url,
+            'img'          => $img ?: '',
+        ) );
+    } else {
+        wp_send_json_error( array( 'message' => 'No stations found' ) );
+    }
+}
+
+/**
+ * Increment play count (listener count) for a station via AJAX
+ */
+add_action( 'wp_ajax_liveradio_increment_play', 'liveradio_ajax_increment_play' );
+add_action( 'wp_ajax_nopriv_liveradio_increment_play', 'liveradio_ajax_increment_play' );
+function liveradio_ajax_increment_play() {
+    check_ajax_referer( 'liveradio_nonce', 'nonce' );
+
+    $station_id = isset( $_POST['station_id'] ) ? intval( $_POST['station_id'] ) : 0;
+    if ( ! $station_id || get_post_type( $station_id ) !== 'radio_station' ) {
+        wp_send_json_error();
+    }
+
+    $current = (int) get_post_meta( $station_id, '_play_count', true );
+    update_post_meta( $station_id, '_play_count', $current + 1 );
+    wp_send_json_success( array( 'play_count' => $current + 1 ) );
+}
+
+/**
+ * Get Recently Played stations data via AJAX
+ */
+add_action( 'wp_ajax_liveradio_get_recently_played', 'liveradio_ajax_get_recently_played' );
+add_action( 'wp_ajax_nopriv_liveradio_get_recently_played', 'liveradio_ajax_get_recently_played' );
+function liveradio_ajax_get_recently_played() {
+    check_ajax_referer( 'liveradio_nonce', 'nonce' );
+
+    $station_ids = isset( $_POST['station_ids'] ) ? $_POST['station_ids'] : array();
+    $station_ids = is_array( $station_ids ) ? array_map( 'intval', $station_ids ) : array();
+    $station_ids = array_filter( $station_ids );
+
+    if ( empty( $station_ids ) ) {
+        wp_send_json_success( array( 'html' => '' ) );
+    }
+
+    $args = array(
+        'post_type'      => 'radio_station',
+        'post__in'       => $station_ids,
+        'posts_per_page' => count( $station_ids ),
+        'orderby'        => 'post__in',
+        'post_status'    => 'publish',
+    );
+
+    $query = new WP_Query( $args );
+
+    ob_start();
+    if ( $query->have_posts() ) {
+        while ( $query->have_posts() ) {
+            $query->the_post();
+            get_template_part( 'template-parts/content', 'station-card' );
+        }
+    }
+    $html = ob_get_clean();
+    wp_reset_postdata();
+
+    wp_send_json_success( array( 'html' => $html ) );
+}
