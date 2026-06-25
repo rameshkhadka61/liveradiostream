@@ -124,21 +124,9 @@ if ( false === $country_count ) {
             $featured_args = array(
                 'post_type'      => 'radio_station',
                 'posts_per_page' => 1,
-                'orderby'        => 'rand',
-                'meta_query'     => array(
-                    array(
-                        'key'     => '_listeners',
-                        'value'   => 5000,
-                        'type'    => 'NUMERIC',
-                        'compare' => '>'
-                    )
-                )
+                'orderby'        => 'rand'
             );
             $featured_query = new WP_Query( $featured_args );
-            if ( ! $featured_query->have_posts() ) {
-                $featured_args['meta_query'] = array();
-                $featured_query = new WP_Query( $featured_args );
-            }
 
             if ( $featured_query->have_posts() ) :
                 while ( $featured_query->have_posts() ) : $featured_query->the_post();

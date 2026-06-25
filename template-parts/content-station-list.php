@@ -30,7 +30,7 @@ if ( $country_terms && ! is_wp_error( $country_terms ) ) {
             <span class="fw-bold station-name text-primary-custom"><?php the_title(); ?></span>
             <span class="live-badge position-static" style="font-size:.65rem;"><div class="live-dot"></div> Live</span>
         </div>
-        <div class="text-muted small"><?php echo esc_html( $flag . $country_name . ' &nbsp;&middot;&nbsp; ' . $genre_name . ' &nbsp;&middot;&nbsp; ' . $listeners_k . ' listening' ); ?></div>
+        <div class="text-muted small"><?php echo esc_html( $flag . $country_name . ' &nbsp;&middot;&nbsp; ' . $genre_name . ' &nbsp;&middot;&nbsp; ' . $listeners_k . ' Times Listened' ); ?></div>
         <div class="text-muted mt-1" style="font-size:.78rem;"><?php echo wp_trim_words( get_the_excerpt(), 15, '...' ); ?></div>
     </div>
     
