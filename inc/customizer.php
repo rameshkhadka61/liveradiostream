@@ -5,6 +5,46 @@
 
 function liveradio_customize_register( $wp_customize ) {
 
+    // Social Media Links Section
+    $wp_customize->add_section( 'liveradio_social_section', array(
+        'title'       => __( 'Footer Social Links', 'liveradio' ),
+        'priority'    => 120,
+        'description' => __( 'Add your social media profile URLs here. Leave empty to hide the icon in the footer.', 'liveradio' ),
+    ) );
+
+    // Facebook URL
+    $wp_customize->add_setting( 'facebook_url', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ) );
+    $wp_customize->add_control( 'facebook_url', array(
+        'label'   => __( 'Facebook Profile/Page URL', 'liveradio' ),
+        'section' => 'liveradio_social_section',
+        'type'    => 'url',
+    ) );
+
+    // Twitter / X URL
+    $wp_customize->add_setting( 'twitter_url', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ) );
+    $wp_customize->add_control( 'twitter_url', array(
+        'label'   => __( 'Twitter / X Profile URL', 'liveradio' ),
+        'section' => 'liveradio_social_section',
+        'type'    => 'url',
+    ) );
+
+    // Instagram URL
+    $wp_customize->add_setting( 'instagram_url', array(
+        'default'           => '',
+        'sanitize_callback' => 'esc_url_raw',
+    ) );
+    $wp_customize->add_control( 'instagram_url', array(
+        'label'   => __( 'Instagram Profile URL', 'liveradio' ),
+        'section' => 'liveradio_social_section',
+        'type'    => 'url',
+    ) );
+
     // Ads & Integrations Section
     $wp_customize->add_section( 'liveradio_ads_section', array(
         'title'       => __( 'AdSense & Integrations', 'liveradio' ),
