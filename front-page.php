@@ -55,14 +55,14 @@ if ( false === $total_plays ) {
             </div>
 
             <!-- Surprise Me Button -->
-            <div class="mt-3">
+            <div class="mt-3 mb-4">
                 <button id="btn-surprise-me" class="btn btn-glass-outline rounded-pill px-4 py-2" style="border: 1px solid rgba(6,182,212,0.4); color: var(--accent-cyan); backdrop-filter: blur(8px);">
                     <span id="surprise-btn-content"><i class="bi bi-shuffle me-2"></i>Surprise Me! <span class="badge rounded-pill ms-1" style="background:rgba(6,182,212,.2); color:var(--accent-cyan); font-size:.7rem;">Random Station</span></span>
                     <span id="surprise-btn-loading" class="d-none"><span class="spinner-border spinner-border-sm me-2"></span>Finding station...</span>
                 </button>
             </div>
 
-            <div class="d-flex flex-wrap justify-content-center gap-2">
+            <div class="d-flex flex-wrap justify-content-center gap-2 mt-2">
                 <?php
                 $trending_countries = get_transient( 'lr_trending_countries_v6' );
                 if ( false === $trending_countries ) {
