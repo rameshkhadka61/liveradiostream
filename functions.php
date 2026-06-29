@@ -326,6 +326,7 @@ $themeUpdateChecker = PucFactory::buildUpdateChecker(
 
 // $themeUpdateChecker->setAuthentication('your-token-here');
 $themeUpdateChecker->setBranch('main');
+$themeUpdateChecker->setCheckPeriod(1); // Check GitHub every 1 hour instead of default 12
 
 /**
  * Clear caching transients when a station is saved or deleted
