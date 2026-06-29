@@ -54,6 +54,32 @@ document.addEventListener('DOMContentLoaded', () => {
             if (this.parentElement) this.parentElement.classList.add('current-menu-item');
         });
     });
+
+    // ── Close mobile navbar on outside click ──────────────────────────────
+    const navbarCollapse = document.getElementById('navbarNav');
+    const navbarToggler  = document.querySelector('.navbar-toggler');
+
+    // Close when clicking anywhere outside the navbar
+    document.addEventListener('click', (e) => {
+        if (!navbarCollapse || !navbarCollapse.classList.contains('show')) return;
+        // If the click is inside the navbar or on the toggler button, do nothing
+        if (navbarCollapse.contains(e.target) || navbarToggler.contains(e.target)) return;
+        // Otherwise collapse it
+        const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+        if (bsCollapse) bsCollapse.hide();
+    });
+
+    // Close when a nav link is tapped (useful for same-page anchors or Swup transitions)
+    if (navbarCollapse) {
+        navbarCollapse.querySelectorAll('.navbar-nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navbarCollapse.classList.contains('show')) {
+                    const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                    if (bsCollapse) bsCollapse.hide();
+                }
+            });
+        });
+    }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
