@@ -321,12 +321,12 @@ use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 $themeUpdateChecker = PucFactory::buildUpdateChecker(
 	'https://github.com/rameshkhadka61/liveradiostream/',
 	__FILE__,
-	'liveradiostream'
+	'liveradiostream',
+	1 // Check GitHub every 1 hour instead of default 12
 );
 
 // $themeUpdateChecker->setAuthentication('your-token-here');
 $themeUpdateChecker->setBranch('main');
-$themeUpdateChecker->setCheckPeriod(1); // Check GitHub every 1 hour instead of default 12
 
 /**
  * Clear caching transients when a station is saved or deleted
