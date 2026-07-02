@@ -350,7 +350,7 @@ function liveradio_ajax_random_station() {
         $station_id   = $valid_post->ID;
         $station_name = get_the_title( $station_id );
         $station_url  = get_permalink( $station_id );
-        $img          = get_the_post_thumbnail_url( $station_id, 'medium' );
+        $img          = get_the_post_thumbnail_url( $station_id, 'full' );
         wp_send_json_success( array(
             'station_id'   => $station_id,
             'station_name' => $station_name,

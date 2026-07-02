@@ -49,7 +49,7 @@ get_header();
                     <div class="col-auto">
                         <div class="position-relative">
                             <?php if ( has_post_thumbnail() ) : ?>
-                                <?php the_post_thumbnail( 'medium', array( 'class' => 'station-large-logo station-img' ) ); ?>
+                                <?php the_post_thumbnail( 'full', array( 'class' => 'station-large-logo station-img' ) ); ?>
                             <?php else : ?>
                                 <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png" alt="Station Logo" class="station-large-logo station-img">
                             <?php endif; ?>
@@ -130,7 +130,7 @@ get_header();
                         </div>
                         
                         <div class="d-flex flex-wrap gap-2">
-                            <button class="btn btn-gradient rounded-pill px-4 btn-play-trigger" data-station-id="<?php echo get_the_ID(); ?>" data-img="<?php echo has_post_thumbnail() ? get_the_post_thumbnail_url(get_the_ID(), 'medium') : get_template_directory_uri() . '/assets/images/placeholder.png'; ?>">
+                            <button class="btn btn-gradient rounded-pill px-4 btn-play-trigger" data-station-id="<?php echo get_the_ID(); ?>" data-img="<?php echo has_post_thumbnail() ? get_the_post_thumbnail_url(get_the_ID(), 'full') : get_template_directory_uri() . '/assets/images/placeholder.png'; ?>">
                                 <i class="bi bi-play-circle-fill me-2"></i>Play Station
                             </button>
                             <?php if ( $website_url ) : ?>
@@ -316,7 +316,7 @@ get_header();
                             <span class="text-muted fw-bold me-2" style="width:20px;"><?php echo $index; ?></span>
                             <a href="<?php the_permalink(); ?>" class="me-2 text-decoration-none">
                                 <?php if ( has_post_thumbnail() ) : ?>
-                                    <?php the_post_thumbnail( 'thumbnail', array( 'class' => 'related-img', 'style' => 'width: 45px; height: 45px; padding: 4px;' ) ); ?>
+                                    <?php the_post_thumbnail( 'full', array( 'class' => 'related-img', 'style' => 'width: 45px; height: 45px; padding: 4px;' ) ); ?>
                                 <?php else : ?>
                                     <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png" class="related-img" style="width: 45px; height: 45px; padding: 4px;" alt="<?php the_title_attribute(); ?>">
                                 <?php endif; ?>
@@ -370,7 +370,7 @@ get_header();
                     ?>
                     <a href="<?php the_permalink(); ?>" class="related-card text-decoration-none">
                         <?php if ( has_post_thumbnail() ) : ?>
-                            <?php the_post_thumbnail( 'thumbnail', array( 'class' => 'related-img' ) ); ?>
+                            <?php the_post_thumbnail( 'full', array( 'class' => 'related-img' ) ); ?>
                         <?php else : ?>
                             <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png" class="related-img" alt="Station">
                         <?php endif; ?>

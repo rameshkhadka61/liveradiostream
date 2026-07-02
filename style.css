@@ -2,7 +2,7 @@
 Theme Name: LiveRadioStream
 Description: Custom theme for LiveRadioStream Website
 Author: Ramesh Khadka
-Version: 1.9.62
+Version: 1.9.63
 */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
@@ -584,7 +584,9 @@ a:hover {
   width: 200px;
   height: 200px;
   border-radius: var(--border-radius);
-  object-fit: cover;
+  object-fit: contain !important;
+  background-color: #ffffff;
+  padding: 0.5rem;
   box-shadow: var(--shadow-md);
   border: 4px solid var(--bg-primary);
 }
@@ -636,7 +638,9 @@ a:hover {
   width: 50px;
   height: 50px;
   border-radius: 8px;
-  object-fit: cover;
+  object-fit: contain !important;
+  background-color: #ffffff;
+  padding: 2px;
 }
 
 .player-controls .btn {

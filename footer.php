@@ -70,7 +70,7 @@ $player_thumb = get_template_directory_uri() . '/assets/images/placeholder.png';
 $is_single_station = is_singular( 'radio_station' );
 if ( $is_single_station ) {
     $player_title = get_the_title();
-    $player_thumb = has_post_thumbnail() ? get_the_post_thumbnail_url( get_the_ID(), 'thumbnail' ) : $player_thumb;
+    $player_thumb = has_post_thumbnail() ? get_the_post_thumbnail_url( get_the_ID(), 'full' ) : $player_thumb;
 }
 ?>
     <!-- Sticky Audio Player -->

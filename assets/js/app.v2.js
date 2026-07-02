@@ -188,9 +188,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const fpName = document.getElementById('front-playing-name');
         if (fpName) fpName.innerText = stationName;
 
-        const imgSrc = card.querySelector('.station-img')?.src || card.querySelector('.station-large-logo')?.src;
-        if (imgSrc) {
-          document.getElementById('player-thumbnail').src = imgSrc;
+        let imgSrc = btn.getAttribute('data-img') || card.querySelector('.station-img')?.src || card.querySelector('.station-large-logo')?.src;
+        if (imgSrc && typeof imgSrc === 'string') {
+          imgSrc = imgSrc.replace(/-\d+x\d+(?=\.[a-zA-Z]{3,4}($|\?))/i, '');
+          const pThumb = document.getElementById('player-thumbnail');
+          if (pThumb) pThumb.src = imgSrc;
           
           const fpImg = document.getElementById('front-playing-img');
           if (fpImg) fpImg.src = imgSrc;

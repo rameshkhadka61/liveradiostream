@@ -31,7 +31,7 @@ $is_trending = rand(1, 10) > 8;
         
         <div class="station-img-wrapper">
             <?php if ( has_post_thumbnail() ) : ?>
-                <?php the_post_thumbnail( 'medium', array( 'class' => 'station-img', 'loading' => 'lazy' ) ); ?>
+                <?php the_post_thumbnail( 'full', array( 'class' => 'station-img', 'loading' => 'lazy' ) ); ?>
             <?php else : ?>
                 <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png" alt="<?php the_title_attribute(); ?>" class="station-img" loading="lazy">
             <?php endif; ?>

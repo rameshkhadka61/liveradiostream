@@ -185,7 +185,7 @@ if ( false === $total_plays ) {
                             <!-- Station Logo -->
                             <div class="position-relative">
                                 <?php if ( has_post_thumbnail() ) : ?>
-                                    <?php the_post_thumbnail( 'large', array( 'class' => 'spotlight-logo station-img bg-white p-2', 'style' => 'object-fit: contain !important;' ) ); ?>
+                                    <?php the_post_thumbnail( 'full', array( 'class' => 'spotlight-logo station-img bg-white p-2', 'style' => 'object-fit: contain !important;' ) ); ?>
                                 <?php else : ?>
                                     <img src="<?php echo get_template_directory_uri(); ?>/assets/images/placeholder.png" alt="Station Logo" class="spotlight-logo station-img bg-white p-2" style="object-fit: contain !important;">
                                 <?php endif; ?>
@@ -212,7 +212,7 @@ if ( false === $total_plays ) {
                                 </p>
                                 
                                 <div class="d-flex justify-content-center justify-content-md-start gap-3">
-                                    <button class="btn btn-gradient rounded-pill px-4 btn-play-trigger" data-station-id="<?php echo get_the_ID(); ?>" data-img="<?php echo has_post_thumbnail() ? get_the_post_thumbnail_url(get_the_ID(), 'medium') : get_template_directory_uri() . '/assets/images/placeholder.png'; ?>">
+                                    <button class="btn btn-gradient rounded-pill px-4 btn-play-trigger" data-station-id="<?php echo get_the_ID(); ?>" data-img="<?php echo has_post_thumbnail() ? get_the_post_thumbnail_url(get_the_ID(), 'full') : get_template_directory_uri() . '/assets/images/placeholder.png'; ?>">
                                         <i class="bi bi-play-circle-fill me-2"></i>Listen Now
                                     </button>
                                     <a href="<?php the_permalink(); ?>" class="btn rounded-pill px-4 btn-glass-outline"><i class="bi bi-info-circle me-2"></i>View Details</a>
